@@ -9,7 +9,7 @@ import level.Game;
  * @author Milo
  * @since 5 April 2013
  */
-public class Player extends Actor implements ActionListener {
+public class Player extends Actor {
 
 	/** Player's move speed. Milliseconds per grid space. **/
 	private static final int playerMoveSpeed = 200;
