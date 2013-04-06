@@ -1,5 +1,7 @@
 package actor;
 
+import java.awt.event.ActionEvent;
+
 import level.Game;
 
 /**
@@ -10,7 +12,10 @@ import level.Game;
 public class Monster extends Actor {
 
 	/** The monster's default move speed, in milliseconds per grid space **/
-	private static final int monsterMoveSpeed = 400;
+	public static final int DEFAULT_MONSTER_SPEED = 400;
+	
+	/** The monster's default health **/
+	public static final int DEFAULT_MONSTER_HEALTH = 20;
 	
 	/**
 	 * Creates a new monster.
@@ -19,6 +24,19 @@ public class Monster extends Actor {
 	 * @param game - The game this monster is a part of.
 	 */
 	public Monster(int x, int y, Game game) {
-		super(x, y, monsterMoveSpeed, game);
+		super(x, y, DEFAULT_MONSTER_HEALTH, DEFAULT_MONSTER_SPEED, game);
+	}
+	
+	/**
+	 * When the monster's timer fires, refresh the actors on the screen.
+	 * Then either attack the player if it is close enough, or move towards a destination.
+	 */
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		game.refreshActors();
+		if (game.monsterCanAttackPlayer(this))
+			game.getPlayer().attack(10);
+		else
+			move();
 	}
 }

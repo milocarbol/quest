@@ -1,7 +1,5 @@
 package actor;
 
-import java.awt.event.ActionListener;
-
 import level.Game;
 
 /**
@@ -14,6 +12,9 @@ public class Player extends Actor {
 	/** Player's move speed. Milliseconds per grid space. **/
 	private static final int playerMoveSpeed = 200;
 	
+	/** Player's maximum health. **/
+	private static final int maximumHealth = 100;
+	
 	/**
 	 * Creates a new player.
 	 * @param x - The initial x-coordinate of the player.
@@ -21,6 +22,6 @@ public class Player extends Actor {
 	 * @param game - The game this player is a part of.
 	 */
 	public Player(int x, int y, Game game) {
-		super(x, y, playerMoveSpeed, game);
+		super(x, y, maximumHealth, playerMoveSpeed, game);
 	}
 }

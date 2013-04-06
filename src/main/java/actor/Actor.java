@@ -15,7 +15,7 @@ import level.Game;
 public class Actor implements ActionListener {	
 	
 	/** Current grid space **/
-	private int currentXPosition, currentYPosition;
+	protected int currentXPosition, currentYPosition;
 	
 	/** Target grid space **/
 	private int targetXPosition, targetYPosition;
@@ -40,10 +40,13 @@ public class Actor implements ActionListener {
 	private int indexInChunk = 1;
 	
 	/** The game this actor is a part of **/
-	private final Game game;
+	protected final Game game;
 	
 	/** The timer that handles this actor's movement **/
 	private final Timer speedTimer;
+	
+	/** The health of the actor. When current health is 0, the actor is dead. **/
+	protected int currentHealth, maximumHealth;
 	
 	/**
 	 * Creates a new actor.
@@ -52,16 +55,27 @@ public class Actor implements ActionListener {
 	 * @param speed - The speed of the actor, in milliseconds per grid space.
 	 * @param game - The game this actor is a part of.
 	 */
-	public Actor(int x, int y, int speed, Game game) {
-		currentXPosition = x;
-		currentYPosition = y;
-		targetXPosition = x;
-		targetYPosition = y;
+	public Actor(int x, int y, int maximumHealth, int speed, Game game) {
+		currentXPosition = targetXPosition = x;
+		currentYPosition = targetYPosition = y;
+		
+		this.currentHealth = this.maximumHealth = maximumHealth;
 		
 		this.game = game;
 		
 		speedTimer = new Timer(speed, this);
 		speedTimer.start();
+	}
+	
+	/**
+	 * Deals damage to the actor.
+	 * @param damage - the amount to reduce current health by.
+	 */
+	public void attack(int damage) {
+		if (currentHealth >= damage)
+			currentHealth -= damage;
+		else
+			currentHealth = 0;
 	}
 	
 	/**
@@ -138,11 +152,19 @@ public class Actor implements ActionListener {
 	public int getYPosition() { return currentYPosition; }
 
 	/**
-	 * Triggered by the actor's speed timer.
-	 * Checks if the desired space is valid and moves into it.
-	 * @param event - The timer event.
+	 * @return the actor's current health
 	 */
-	public void actionPerformed(ActionEvent event) {
+	public int getCurrentHealth() { return currentHealth; }
+	
+	/**
+	 * @return the actor's maximum health
+	 */
+	public int getMaximumHealth() { return maximumHealth; }
+	
+	/**
+	 * If the next position in the actor's path is available, move into it.
+	 */
+	protected void move() {
 		if (currentXPosition != targetXPosition || currentYPosition != targetYPosition) {
 			if (chunksAreHorizontal) {
 				int potentialXPosition = currentXPosition + computeDirection(currentXPosition, targetXPosition);
@@ -185,6 +207,16 @@ public class Actor implements ActionListener {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Triggered by the actor's speed timer.
+	 * Default behaviour, should generally be overridden by subclasses.
+	 * @param event - The timer event.
+	 */
+	public void actionPerformed(ActionEvent event) {
+		game.refreshActors();
+		move();
 	}
 	
 	/**
