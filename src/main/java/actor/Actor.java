@@ -11,11 +11,16 @@ import level.Game;
  */
 public abstract class Actor {	
 	
+	/** LOCATION DATA **/
+	
 	/** Current grid space **/
-	protected int currentXPosition, currentYPosition;
+	private int currentXPosition, currentYPosition;
 	
 	/** Target grid space **/
 	private int targetXPosition, targetYPosition;
+	
+	
+	/** NAVIGATION DATA **/
 	
 	/**
 	 * If the chunks (the line segments placed in
@@ -36,19 +41,29 @@ public abstract class Actor {
 	 **/
 	private int indexInChunk = 1;
 	
-	/** The game this actor is a part of **/
-	protected final Game game;
+	
+	/** ATTRIBUTE DATA **/
 	
 	/** The health of the actor. When current health is 0, the actor is dead. **/
 	private int currentHealth, maximumHealth;
 	
+	/** The speed of the actor, in multiples of the Actor Controller refresh timer **/
 	private int speed;
 	
+	/** The damage this actor deals to other actors **/
 	private int damage;
 	
+	/** Whether or not this actor is still alive. Dead actors do not act **/
 	private boolean isAlive = true;
 	
+	/** The colors for this actor, dead or alive. TODO change to images **/
 	private Color aliveColor, deadColor, color;
+	
+	
+	/** INTERACTION DATA **/
+	
+	/** The game this actor is a part of **/
+	protected final Game game;
 	
 	/**
 	 * Creates a new actor.
@@ -63,18 +78,42 @@ public abstract class Actor {
 		
 		this.currentHealth = this.maximumHealth = maximumHealth;
 		
-		this.game = game;
-		
 		this.speed = speed;
 		this.damage = damage;
 		this.aliveColor = aliveColor;
 		this.deadColor = deadColor;
 		this.color = aliveColor;
+		
+		this.game = game;
 	}
 	
+	/** ACCESSORS **/
+	
+	/** @return The damage this actor deals to other actors **/
 	public int getDamage() { return damage; }
 	
+	/** @return Whether or not this actor is still alive **/
 	public boolean isAlive() { return isAlive; }
+	
+	/** @return the actor's speed (in multiples of the actor controller's refresh rate) **/
+	public int getSpeed() { return speed; }
+	
+	/** @return the actor's current x position. **/
+	public int getXPosition() { return currentXPosition; }
+	
+	/** @return the actor's current y position **/
+	public int getYPosition() { return currentYPosition; }
+
+	/** @return the actor's current health **/
+	public int getCurrentHealth() { return currentHealth; }
+	
+	/** @return the actor's maximum health **/
+	public int getMaximumHealth() { return maximumHealth; }
+	
+	/** @return The color to draw this actor. TODO change this to images **/
+	public Color getColor() { return color; }
+	
+	/** INTERACTION **/
 	
 	/**
 	 * Deals damage to the actor.
@@ -89,6 +128,15 @@ public abstract class Actor {
 			color = deadColor;
 		}
 	}
+	
+	/**
+	 * Moves the actor towards its target location.
+	 */
+	public void act() {
+		move();
+	}
+	
+	/** NAVIGATION **/
 	
 	/**
 	 * Tells the actor to move towards another actor.
@@ -154,34 +202,9 @@ public abstract class Actor {
 	}
 	
 	/**
-	 * @return the actor's speed (in multiples of the actor controller's refresh rate)
-	 */
-	public int getSpeed() { return speed; }
-	
-	/**
-	 * @return the actor's current x position.
-	 */
-	public int getXPosition() { return currentXPosition; }
-	
-	/**
-	 * @return the actor's current y position
-	 */
-	public int getYPosition() { return currentYPosition; }
-
-	/**
-	 * @return the actor's current health
-	 */
-	public int getCurrentHealth() { return currentHealth; }
-	
-	/**
-	 * @return the actor's maximum health
-	 */
-	public int getMaximumHealth() { return maximumHealth; }
-	
-	/**
 	 * If the next position in the actor's path is available, move into it.
 	 */
-	protected void move() {
+	private void move() {
 		if (currentXPosition != targetXPosition || currentYPosition != targetYPosition) {
 			if (chunksAreHorizontal) {
 				int potentialXPosition = currentXPosition + computeDirection(currentXPosition, targetXPosition);
@@ -225,19 +248,6 @@ public abstract class Actor {
 			}
 		}
 	}
-	
-	/**
-	 * Default behaviour, should generally be overridden by subclasses.
-	 * @param event - The timer event.
-	 */
-	public void act() {
-		move();
-	}
-	
-	/**
-	 * @return the color to draw this actor. TODO change this to images
-	 */
-	public Color getColor() { return color; }
 	
 	/**
 	 * Computes the direction (positive or negative) required to reach the target.

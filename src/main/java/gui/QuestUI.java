@@ -26,10 +26,13 @@ public class QuestUI extends JFrame implements ActionListener {
 	/** Title **/
 	private static final String title = "Quest";
 	
+	/** The components that make up the UI **/
 	private final List<JComponent> components = new LinkedList<JComponent>();
 	
+	/** How frequently to repaint the screen **/
 	private static final int refreshPeriod = 100;
 	
+	/** The timer to repaint the screen **/
 	Timer animationTimer = new Timer(refreshPeriod, this);
 	
 	/**
@@ -56,11 +59,11 @@ public class QuestUI extends JFrame implements ActionListener {
 	 * @return the required dimensions of the content screen.
 	 */
 	private Dimension addComponentsUsing(Game game, InputHandler inputHandler) {
-		Screen screen = new Screen(game, inputHandler);
-		screen.setBounds(0, 0, Screen.WIDTH, Screen.HEIGHT);
+		GameWindow screen = new GameWindow(game, inputHandler);
+		screen.setBounds(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		
-		InfoBar infoBar = new InfoBar(0, Screen.HEIGHT, game, inputHandler);
-		infoBar.setBounds(0, Screen.HEIGHT, InfoBar.WIDTH, InfoBar.HEIGHT);
+		InfoBar infoBar = new InfoBar(0, GameWindow.HEIGHT, game, inputHandler);
+		infoBar.setBounds(0, GameWindow.HEIGHT, InfoBar.WIDTH, InfoBar.HEIGHT);
 		
 		components.add(screen);
 		components.add(infoBar);
@@ -70,8 +73,8 @@ public class QuestUI extends JFrame implements ActionListener {
 		}
 		
 		return new Dimension(
-						Screen.WIDTH,
-						Screen.HEIGHT + InfoBar.HEIGHT
+						GameWindow.WIDTH,
+						GameWindow.HEIGHT + InfoBar.HEIGHT
 					);
 	}
 	

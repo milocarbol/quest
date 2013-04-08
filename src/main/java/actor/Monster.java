@@ -20,8 +20,10 @@ public class Monster extends Actor {
 	/** The monster's default damage **/
 	public static final int DEFAULT_DAMAGE = 10;
 	
+	/** The color to draw monsters when they're alive **/
 	public static final Color DEFAULT_ALIVE_COLOR = Color.red;
 	
+	/** The color to draw monsters when they're dead **/
 	public static final Color DEFAULT_DEAD_COLOR = Color.DARK_GRAY;
 	
 	/**
@@ -35,7 +37,7 @@ public class Monster extends Actor {
 	}
 	
 	/**
-	 * Either attack the player if it is close enough, or move towards a destination.
+	 * Either attacks the player if it is close enough, or move towards a destination.
 	 */
 	@Override
 	public void act() {
@@ -43,7 +45,7 @@ public class Monster extends Actor {
 			game.getPlayer().attack(getDamage());
 		else {
 			moveTo(game.getPlayer());
-			move();
+			super.act();
 		}
 	}
 }

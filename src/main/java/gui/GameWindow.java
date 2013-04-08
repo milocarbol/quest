@@ -17,11 +17,11 @@ import actor.Player;
 import controller.InputHandler;
 
 /**
- * The screen on which to animate.
+ * The part of the screen which renders the gameplay on which to animate.
  * @author Milo
  * @since 5 April 2013
  */
-public class Screen extends JComponent implements KeyListener, MouseListener, MouseMotionListener {
+public class GameWindow extends JComponent implements KeyListener, MouseListener, MouseMotionListener {
 	
 	/** Default Serial Version ID **/
 	private static final long serialVersionUID = 1L;
@@ -46,7 +46,7 @@ public class Screen extends JComponent implements KeyListener, MouseListener, Mo
 	/**
 	 * Creates a new Screen and starts the painting timer.
 	 */
-	public Screen(Game game, InputHandler inputHandler) {
+	public GameWindow(Game game, InputHandler inputHandler) {
 		this.game = game;
 		this.inputHandler = inputHandler;
     	

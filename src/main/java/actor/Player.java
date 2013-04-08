@@ -20,8 +20,10 @@ public class Player extends Actor {
 	/** Player's default damage for testing **/
 	public static final int DEFAULT_DAMAGE = 20;
 	
+	/** The color to draw the player while they're alive **/
 	public static final Color DEFAULT_ALIVE_COLOR = Color.green;
 	
+	/** The color to draw the player while they're dead **/
 	public static final Color DEFAULT_DEAD_COLOR = Color.gray;
 	
 	/**
