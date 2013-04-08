@@ -1,10 +1,5 @@
 package actor;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Timer;
-
 import level.Game;
 
 /**
@@ -12,7 +7,7 @@ import level.Game;
  * @author Milo
  * @since 5 April 2013
  */
-public class Actor implements ActionListener {	
+public abstract class Actor {	
 	
 	/** Current grid space **/
 	protected int currentXPosition, currentYPosition;
@@ -42,11 +37,10 @@ public class Actor implements ActionListener {
 	/** The game this actor is a part of **/
 	protected final Game game;
 	
-	/** The timer that handles this actor's movement **/
-	private final Timer speedTimer;
-	
 	/** The health of the actor. When current health is 0, the actor is dead. **/
 	protected int currentHealth, maximumHealth;
+	
+	private int speed;
 	
 	/**
 	 * Creates a new actor.
@@ -63,8 +57,7 @@ public class Actor implements ActionListener {
 		
 		this.game = game;
 		
-		speedTimer = new Timer(speed, this);
-		speedTimer.start();
+		this.speed = speed;
 	}
 	
 	/**
@@ -142,6 +135,11 @@ public class Actor implements ActionListener {
 	}
 	
 	/**
+	 * @return the actor's speed (in multiples of the actor controller's refresh rate)
+	 */
+	public int getSpeed() { return speed; }
+	
+	/**
 	 * @return the actor's current x position.
 	 */
 	public int getXPosition() { return currentXPosition; }
@@ -210,12 +208,10 @@ public class Actor implements ActionListener {
 	}
 	
 	/**
-	 * Triggered by the actor's speed timer.
 	 * Default behaviour, should generally be overridden by subclasses.
 	 * @param event - The timer event.
 	 */
-	public void actionPerformed(ActionEvent event) {
-		game.refreshActors();
+	public void act() {
 		move();
 	}
 	

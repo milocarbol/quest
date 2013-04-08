@@ -5,6 +5,8 @@ import gui.Screen;
 import java.util.LinkedList;
 import java.util.List;
 
+import controller.ActorController;
+
 import actor.Actor;
 import actor.Monster;
 import actor.Player;
@@ -25,6 +27,9 @@ public class Game {
 	/** Grid of actor positions. TODO make this cleaner **/
 	private Actor[][] actors = new Actor[Screen.GRID_X_SPACES][Screen.GRID_Y_SPACES];
 	
+	/** The controller for the actors **/
+	private ActorController actorController;
+	
 	/**
 	 * Makes a new game and puts the player and monster in place for testing.
 	 */
@@ -32,7 +37,9 @@ public class Game {
 		this.player = new Player(0, 0, this);
 		this.monsters = makeMonsters();
 		
-		refreshActors();
+		this.actorController = new ActorController(this)
+									.withPlayer(player)
+									.withMonsters(monsters);
 	}
 	
 	/**
@@ -52,11 +59,13 @@ public class Game {
 	 * @return True if the space is valid (i.e. not occupied and on the board), false otherwise.
 	 */
 	public boolean spaceIsFree(int x, int y) {
-		return
-				x >= 0 && y >= 0 &&
-				x < Screen.GRID_X_SPACES &&
-				y < Screen.GRID_Y_SPACES &&
-				actors[x][y] == null;
+		boolean isFree =	x >= 0 && y >= 0 &&
+							x < Screen.GRID_X_SPACES &&
+							y < Screen.GRID_Y_SPACES &&
+							actors[x][y] == null;
+		
+		return isFree;
+				
 	}
 	
 	/**
@@ -84,9 +93,6 @@ public class Game {
 	
 	/**
 	 * Polls all actors and updates their positions in the actor grid according to their current positions.
-	 * TODO This is really hacky.
-	 * 	If something's position gets updated before this is called (different timers),
-	 * 		they could be momentarily on the same grid space but seem like they aren't...
 	 */
 	public void refreshActors() {
 		for (Monster monster : monsters)
@@ -117,5 +123,19 @@ public class Game {
 	public boolean monsterCanAttackPlayer(Monster monster) {
 		return	Math.abs(monster.getXPosition() - player.getXPosition()) <= 1 &&
 				Math.abs(monster.getYPosition() - player.getYPosition()) <= 1;
+	}
+	
+	/**
+	 * Pauses the game
+	 */
+	public void pause() {
+		actorController.pause();
+	}
+	
+	/**
+	 * Resumes the game
+	 */
+	public void resume() {
+		actorController.resume();
 	}
 }

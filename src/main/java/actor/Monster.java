@@ -1,7 +1,5 @@
 package actor;
 
-import java.awt.event.ActionEvent;
-
 import level.Game;
 
 /**
@@ -11,8 +9,8 @@ import level.Game;
  */
 public class Monster extends Actor {
 
-	/** The monster's default move speed, in milliseconds per grid space **/
-	public static final int DEFAULT_MONSTER_SPEED = 400;
+	/** The monster's default act speed, in hundred-milliseconds per grid space **/
+	public static final int DEFAULT_MONSTER_SPEED = 4;
 	
 	/** The monster's default health **/
 	public static final int DEFAULT_MONSTER_HEALTH = 20;
@@ -28,12 +26,10 @@ public class Monster extends Actor {
 	}
 	
 	/**
-	 * When the monster's timer fires, refresh the actors on the screen.
-	 * Then either attack the player if it is close enough, or move towards a destination.
+	 * Either attack the player if it is close enough, or move towards a destination.
 	 */
 	@Override
-	public void actionPerformed(ActionEvent event) {
-		game.refreshActors();
+	public void act() {
 		if (game.monsterCanAttackPlayer(this))
 			game.getPlayer().attack(10);
 		else

@@ -9,11 +9,11 @@ import level.Game;
  */
 public class Player extends Actor {
 
-	/** Player's move speed. Milliseconds per grid space. **/
-	private static final int playerMoveSpeed = 200;
+	/** Player's move speed in hundred-milliseconds per grid space. **/
+	public static final int PLAYER_SPEED = 2;
 	
 	/** Player's maximum health. **/
-	private static final int maximumHealth = 100;
+	public static final int MAXIMUM_HEALTH = 100;
 	
 	/**
 	 * Creates a new player.
@@ -22,6 +22,6 @@ public class Player extends Actor {
 	 * @param game - The game this player is a part of.
 	 */
 	public Player(int x, int y, Game game) {
-		super(x, y, maximumHealth, playerMoveSpeed, game);
+		super(x, y, MAXIMUM_HEALTH, PLAYER_SPEED, game);
 	}
 }
