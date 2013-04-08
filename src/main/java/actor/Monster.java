@@ -2,7 +2,8 @@ package actor;
 
 import java.awt.Color;
 
-import level.Game;
+import control.Game;
+
 
 /**
  * Monsters generally fight the player.

@@ -10,8 +10,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import level.Game;
-import controller.InputHandler;
+import control.Game;
+import control.InputHandler;
 
 /**
  * Main class.

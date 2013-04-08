@@ -5,8 +5,8 @@ import java.awt.Graphics;
 
 import javax.swing.JComponent;
 
-import level.Game;
-import controller.InputHandler;
+import control.Game;
+import control.InputHandler;
 
 /**
  * Information bar showing all of the player's stats, abilities, etc.

@@ -2,7 +2,8 @@ package actor;
 
 import java.awt.Color;
 
-import level.Game;
+import control.Game;
+
 
 /**
  * Base class for all movable characters in the game.

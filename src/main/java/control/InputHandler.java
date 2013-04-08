@@ -1,9 +1,8 @@
-package controller;
+package control;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import level.Game;
 
 /**
  * Handles all key presses.
