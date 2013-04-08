@@ -2,6 +2,7 @@ package level;
 
 import gui.GameWindow;
 
+import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,11 +31,17 @@ public class Game {
 	/** The controller for the actors **/
 	private ActorController actorController;
 	
+	/** The current map **/
+	private Layout map;
+	
 	/**
 	 * Makes a new game and puts the player and monsters in place for testing.
 	 */
 	public Game() {
-		this.player = new Player(0, 0, this);
+		this.map = new Layout();
+		
+		Point startLocation = map.getStartLocation();
+		this.player = new Player(startLocation.x, startLocation.y, this);
 		this.monsters = makeMonsters();
 		
 		this.actorController = new ActorController(this)
@@ -62,6 +69,9 @@ public class Game {
 	
 	/** @return the player **/
 	public Player getPlayer() { return player; }
+	
+	/** @return The map for drawing **/
+	public Layout getMapLayout() { return map; }
 	
 	/**
 	 * Fetches the actor on a space.

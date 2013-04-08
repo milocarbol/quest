@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -11,6 +10,7 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JComponent;
 
 import level.Game;
+import level.Layout;
 import actor.Actor;
 import actor.Monster;
 import actor.Player;
@@ -61,23 +61,30 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	 * Animates.
 	 */
 	public void paint(Graphics g) {
-		g.setColor(Color.black);
-		for (int i = GRID_SPACE_SIZE; i <= WIDTH; i += GRID_SPACE_SIZE)
-			g.drawLine(i, 0, i, HEIGHT);
-		for (int i = GRID_SPACE_SIZE; i <= HEIGHT; i +=  GRID_SPACE_SIZE)
-			g.drawLine(0, i, WIDTH, i);
-			
+//		g.setColor(Color.black);
+//		for (int i = GRID_SPACE_SIZE; i <= WIDTH; i += GRID_SPACE_SIZE)
+//			g.drawLine(i, 0, i, HEIGHT);
+//		for (int i = GRID_SPACE_SIZE; i <= HEIGHT; i +=  GRID_SPACE_SIZE)
+//			g.drawLine(0, i, WIDTH, i);
+		
+		Layout layout = game.getMapLayout();
+		for (int row = 0; row < GRID_X_SPACES; row++)
+			for (int column = 0; column < GRID_Y_SPACES; column++) {
+				g.setColor(layout.tileAt(row, column));
+				g.fillRect(row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE);
+			}
+		
 		Actor[][] actors = game.getActors();
-		for (int row = 0; row < actors.length; row++)
-			for (int column = 0; column < actors[row].length; column++) {
+		for (int row = 0; row < GRID_X_SPACES; row++)
+			for (int column = 0; column < GRID_Y_SPACES; column++) {
 				Actor actor = actors[row][column];
 				if (actor != null) {
 					g.setColor(actor.getColor());
 					if (actor instanceof Player) {
-						g.fillRect(row*GRID_SPACE_SIZE + 1, column*GRID_SPACE_SIZE + 1, GRID_SPACE_SIZE - 1, GRID_SPACE_SIZE - 1);
+						g.fillRect(row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE);
 					}
 					else if (actor instanceof Monster) {
-						g.fillRect(row*GRID_SPACE_SIZE + 1, column*GRID_SPACE_SIZE + 1, GRID_SPACE_SIZE - 1, GRID_SPACE_SIZE - 1);
+						g.fillRect(row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE);
 					}
 				}
 			}
