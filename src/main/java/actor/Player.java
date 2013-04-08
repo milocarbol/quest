@@ -1,5 +1,7 @@
 package actor;
 
+import java.awt.Color;
+
 import level.Game;
 
 /**
@@ -10,10 +12,17 @@ import level.Game;
 public class Player extends Actor {
 
 	/** Player's move speed in hundred-milliseconds per grid space. **/
-	public static final int PLAYER_SPEED = 2;
+	public static final int SPEED = 2;
 	
 	/** Player's maximum health. **/
 	public static final int MAXIMUM_HEALTH = 100;
+	
+	/** Player's default damage for testing **/
+	public static final int DEFAULT_DAMAGE = 20;
+	
+	public static final Color DEFAULT_ALIVE_COLOR = Color.green;
+	
+	public static final Color DEFAULT_DEAD_COLOR = Color.gray;
 	
 	/**
 	 * Creates a new player.
@@ -22,6 +31,6 @@ public class Player extends Actor {
 	 * @param game - The game this player is a part of.
 	 */
 	public Player(int x, int y, Game game) {
-		super(x, y, MAXIMUM_HEALTH, PLAYER_SPEED, game);
+		super(x, y, MAXIMUM_HEALTH, SPEED, DEFAULT_DAMAGE, DEFAULT_ALIVE_COLOR, DEFAULT_DEAD_COLOR, game);
 	}
 }

@@ -64,8 +64,30 @@ public class Game {
 							y < Screen.GRID_Y_SPACES &&
 							actors[x][y] == null;
 		
-		return isFree;
-				
+		return isFree;	
+	}
+	
+	/**
+	 * Checks if a space has an actor on it.
+	 * @param x - The x-coordinate of the space to check
+	 * @param y - The y-coordinate of the space to check
+	 * @return true if the space has an actor on it, false otherwise
+	 */
+	public boolean spaceHasActor(int x, int y) {
+		return	x >= 0 && y >= 0 &&
+				x < Screen.GRID_X_SPACES &&
+				y < Screen.GRID_Y_SPACES &&
+				actors[x][y] != null;
+	}
+	
+	/**
+	 * Fetches the actor on a space.
+	 * @param x - The x-coordinate of the space to check
+	 * @param y - The y-coordinate of the space to check
+	 * @return the actor on the space, or null if there is no actor.
+	 */
+	public Actor getActor(int x, int y) {
+		return actors[x][y];
 	}
 	
 	/**
@@ -87,8 +109,20 @@ public class Game {
 	 * @param xPixelDestination - The x-pixel to head towards.
 	 * @param yPixelDestination - The y-pixel to head towards.
 	 */
-	public void movePlayer(int xPixelDestination, int yPixelDestination) {
-		player.moveTo(xPixelDestination/Screen.GRID_SPACE_SIZE, yPixelDestination/Screen.GRID_SPACE_SIZE);
+	public void movePlayer(int x, int y) {
+		player.moveTo(x, y);
+	}
+	
+	public void click(int x, int y) {
+		if (actors[x][y] == null)
+			player.moveTo(x, y);
+		else if (actors[x][y] == player)
+			; // TODO Healing spells or something could go here
+		else if (actors[x][y] instanceof Monster)
+			if (canAttack(actors[x][y], player, 1))
+				actors[x][y].attack(player.getDamage());
+			else
+				player.moveTo(actors[x][y]);
 	}
 	
 	/**
@@ -116,13 +150,15 @@ public class Game {
 	}
 	
 	/**
-	 * Checks if a given monster can attack the player.
-	 * @param monster - The given monster
-	 * @return whether or not the monster can attack the player.
+	 * Checks if a given actor can attack another.
+	 * @param target - the target of the attack
+	 * @param source - the source of the attack
+	 * @param range - the range of the attack
+	 * @return whether or not the source can attack the target
 	 */
-	public boolean monsterCanAttackPlayer(Monster monster) {
-		return	Math.abs(monster.getXPosition() - player.getXPosition()) <= 1 &&
-				Math.abs(monster.getYPosition() - player.getYPosition()) <= 1;
+	public boolean canAttack(Actor target, Actor source, int range) {
+		return	Math.abs(target.getXPosition() - source.getXPosition()) <= range &&
+				Math.abs(target.getYPosition() - source.getYPosition()) <= range;
 	}
 	
 	/**
@@ -137,5 +173,9 @@ public class Game {
 	 */
 	public void resume() {
 		actorController.resume();
+	}
+	
+	public static int pixelToGridSpace(int pixel) {
+		return pixel/Screen.GRID_SPACE_SIZE;
 	}
 }

@@ -1,5 +1,7 @@
 package actor;
 
+import java.awt.Color;
+
 import level.Game;
 
 /**
@@ -38,9 +40,15 @@ public abstract class Actor {
 	protected final Game game;
 	
 	/** The health of the actor. When current health is 0, the actor is dead. **/
-	protected int currentHealth, maximumHealth;
+	private int currentHealth, maximumHealth;
 	
 	private int speed;
+	
+	private int damage;
+	
+	private boolean isAlive = true;
+	
+	private Color aliveColor, deadColor, color;
 	
 	/**
 	 * Creates a new actor.
@@ -49,7 +57,7 @@ public abstract class Actor {
 	 * @param speed - The speed of the actor, in milliseconds per grid space.
 	 * @param game - The game this actor is a part of.
 	 */
-	public Actor(int x, int y, int maximumHealth, int speed, Game game) {
+	public Actor(int x, int y, int maximumHealth, int speed, int damage, Color aliveColor, Color deadColor, Game game) {
 		currentXPosition = targetXPosition = x;
 		currentYPosition = targetYPosition = y;
 		
@@ -58,7 +66,15 @@ public abstract class Actor {
 		this.game = game;
 		
 		this.speed = speed;
+		this.damage = damage;
+		this.aliveColor = aliveColor;
+		this.deadColor = deadColor;
+		this.color = aliveColor;
 	}
+	
+	public int getDamage() { return damage; }
+	
+	public boolean isAlive() { return isAlive; }
 	
 	/**
 	 * Deals damage to the actor.
@@ -67,8 +83,11 @@ public abstract class Actor {
 	public void attack(int damage) {
 		if (currentHealth >= damage)
 			currentHealth -= damage;
-		else
+		else {
 			currentHealth = 0;
+			isAlive = false;
+			color = deadColor;
+		}
 	}
 	
 	/**
@@ -214,6 +233,11 @@ public abstract class Actor {
 	public void act() {
 		move();
 	}
+	
+	/**
+	 * @return the color to draw this actor. TODO change this to images
+	 */
+	public Color getColor() { return color; }
 	
 	/**
 	 * Computes the direction (positive or negative) required to reach the target.

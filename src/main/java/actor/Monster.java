@@ -1,5 +1,7 @@
 package actor;
 
+import java.awt.Color;
+
 import level.Game;
 
 /**
@@ -13,7 +15,14 @@ public class Monster extends Actor {
 	public static final int DEFAULT_MONSTER_SPEED = 4;
 	
 	/** The monster's default health **/
-	public static final int DEFAULT_MONSTER_HEALTH = 20;
+	public static final int DEFAULT_HEALTH = 20;
+	
+	/** The monster's default damage **/
+	public static final int DEFAULT_DAMAGE = 10;
+	
+	public static final Color DEFAULT_ALIVE_COLOR = Color.red;
+	
+	public static final Color DEFAULT_DEAD_COLOR = Color.DARK_GRAY;
 	
 	/**
 	 * Creates a new monster.
@@ -22,7 +31,7 @@ public class Monster extends Actor {
 	 * @param game - The game this monster is a part of.
 	 */
 	public Monster(int x, int y, Game game) {
-		super(x, y, DEFAULT_MONSTER_HEALTH, DEFAULT_MONSTER_SPEED, game);
+		super(x, y, DEFAULT_HEALTH, DEFAULT_MONSTER_SPEED, DEFAULT_DAMAGE, DEFAULT_ALIVE_COLOR, DEFAULT_DEAD_COLOR, game);
 	}
 	
 	/**
@@ -30,9 +39,11 @@ public class Monster extends Actor {
 	 */
 	@Override
 	public void act() {
-		if (game.monsterCanAttackPlayer(this))
-			game.getPlayer().attack(10);
-		else
+		if (game.canAttack(game.getPlayer(), this, 1))
+			game.getPlayer().attack(getDamage());
+		else {
+			moveTo(game.getPlayer());
 			move();
+		}
 	}
 }

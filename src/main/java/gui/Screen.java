@@ -72,12 +72,11 @@ public class Screen extends JComponent implements KeyListener, MouseListener, Mo
 			for (int column = 0; column < actors[row].length; column++) {
 				Actor actor = actors[row][column];
 				if (actor != null) {
+					g.setColor(actor.getColor());
 					if (actor instanceof Player) {
-						g.setColor(Color.black);
 						g.fillRect(row*GRID_SPACE_SIZE + 1, column*GRID_SPACE_SIZE + 1, GRID_SPACE_SIZE - 1, GRID_SPACE_SIZE - 1);
 					}
 					else if (actor instanceof Monster) {
-						g.setColor(Color.red);
 						g.fillRect(row*GRID_SPACE_SIZE + 1, column*GRID_SPACE_SIZE + 1, GRID_SPACE_SIZE - 1, GRID_SPACE_SIZE - 1);
 					}
 				}

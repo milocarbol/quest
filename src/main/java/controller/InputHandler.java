@@ -36,6 +36,9 @@ public class InputHandler {
 	 * @param click - The click event to handle.
 	 */
 	public void act(MouseEvent click) {
-		game.movePlayer(click.getX(), click.getY());
+		int x = Game.pixelToGridSpace(click.getX());
+		int y = Game.pixelToGridSpace(click.getY());
+		
+		game.click(x, y);
 	}
 }
