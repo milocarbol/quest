@@ -22,10 +22,10 @@ public class Player extends Actor {
 	public static final int DEFAULT_DAMAGE = 20;
 	
 	/** The color to draw the player while they're alive **/
-	public static final Color DEFAULT_ALIVE_COLOR = Color.green;
+	public static final Color DEFAULT_ALIVE_COLOR = Color.cyan;
 	
 	/** The color to draw the player while they're dead **/
-	public static final Color DEFAULT_DEAD_COLOR = Color.gray;
+	public static final Color DEFAULT_DEAD_COLOR = Color.blue;
 	
 	/**
 	 * Creates a new player.

@@ -40,8 +40,8 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	public static final int GRID_SPACE_SIZE = 20;
 	
 	/** The x- and y-dimensions of the grid, in grid spaces **/
-	public static final int GRID_X_SPACES = WIDTH / GRID_SPACE_SIZE,
-							GRID_Y_SPACES = HEIGHT / GRID_SPACE_SIZE;
+	public static final int GRID_ROWS = WIDTH / GRID_SPACE_SIZE,
+							GRID_COLUMNS = HEIGHT / GRID_SPACE_SIZE;
 	
 	/**
 	 * Creates a new Screen and starts the painting timer.
@@ -61,22 +61,15 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	 * Animates.
 	 */
 	public void paint(Graphics g) {
-//		g.setColor(Color.black);
-//		for (int i = GRID_SPACE_SIZE; i <= WIDTH; i += GRID_SPACE_SIZE)
-//			g.drawLine(i, 0, i, HEIGHT);
-//		for (int i = GRID_SPACE_SIZE; i <= HEIGHT; i +=  GRID_SPACE_SIZE)
-//			g.drawLine(0, i, WIDTH, i);
-		
 		Layout layout = game.getMapLayout();
-		for (int row = 0; row < GRID_X_SPACES; row++)
-			for (int column = 0; column < GRID_Y_SPACES; column++) {
-				g.setColor(layout.tileAt(row, column));
-				g.fillRect(row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE);
+		for (int row = 0; row < GRID_ROWS; row++)
+			for (int column = 0; column < GRID_COLUMNS; column++) {
+				g.drawImage(layout.tileAt(row, column), row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
 			}
 		
 		Actor[][] actors = game.getActors();
-		for (int row = 0; row < GRID_X_SPACES; row++)
-			for (int column = 0; column < GRID_Y_SPACES; column++) {
+		for (int row = 0; row < GRID_ROWS; row++)
+			for (int column = 0; column < GRID_COLUMNS; column++) {
 				Actor actor = actors[row][column];
 				if (actor != null) {
 					g.setColor(actor.getColor());

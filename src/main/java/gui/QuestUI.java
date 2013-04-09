@@ -1,8 +1,11 @@
 package gui;
 
+import io.LayoutLoader;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,6 +95,11 @@ public class QuestUI extends JFrame implements ActionListener {
 	 * @param args - Command line arguments. Unused.
 	 */
 	public static void main(String[] args) {
-		new QuestUI(new Game());
+		try {
+			LayoutLoader.createTestMap();
+			new QuestUI(new Game());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

@@ -1,14 +1,13 @@
 package control;
 
 import gui.GameWindow;
+import io.LayoutLoader;
 
 import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
 
 import level.Layout;
-
-
 import actor.Actor;
 import actor.Monster;
 import actor.Player;
@@ -27,7 +26,7 @@ public class Game {
 	private List<Monster> monsters;
 	
 	/** Grid of actor positions. **/
-	private Actor[][] actors = new Actor[GameWindow.GRID_X_SPACES][GameWindow.GRID_Y_SPACES];
+	private Actor[][] actors = new Actor[GameWindow.GRID_ROWS][GameWindow.GRID_COLUMNS];
 	
 	/** The controller for the actors **/
 	private ActorController actorController;
@@ -35,11 +34,15 @@ public class Game {
 	/** The current map **/
 	private Layout map;
 	
+	/** The layout loader used for loading maps **/
+	private LayoutLoader layoutLoader;
+	
 	/**
 	 * Makes a new game and puts the player and monsters in place for testing.
 	 */
 	public Game() {
-		this.map = new Layout();
+		this.layoutLoader = new LayoutLoader();		
+		this.map = new Layout(layoutLoader);
 		
 		Point startLocation = map.getStartLocation();
 		this.player = new Player(startLocation.x, startLocation.y, this);
@@ -57,9 +60,9 @@ public class Game {
 	 */
 	private List<Monster> makeMonsters() {
 		monsters = new LinkedList<Monster>();
-		monsters.add(new Monster(GameWindow.GRID_X_SPACES - 1, GameWindow.GRID_Y_SPACES - 1, this));
-		monsters.add(new Monster(GameWindow.GRID_X_SPACES - 1, 0, this));
-		monsters.add(new Monster(0, GameWindow.GRID_Y_SPACES - 1, this));
+		monsters.add(new Monster(GameWindow.GRID_ROWS - 1, GameWindow.GRID_COLUMNS - 1, this));
+		monsters.add(new Monster(GameWindow.GRID_ROWS - 1, 0, this));
+		monsters.add(new Monster(0, GameWindow.GRID_COLUMNS - 1, this));
 		return monsters;
 	}
 	
@@ -94,8 +97,8 @@ public class Game {
 	 */
 	public boolean spaceIsFree(int x, int y) {
 		boolean isFree =	x >= 0 && y >= 0 &&
-							x < GameWindow.GRID_X_SPACES &&
-							y < GameWindow.GRID_Y_SPACES &&
+							x < GameWindow.GRID_ROWS &&
+							y < GameWindow.GRID_COLUMNS &&
 							actors[x][y] == null;
 		
 		return isFree;	
@@ -109,8 +112,8 @@ public class Game {
 	 */
 	public boolean spaceHasActor(int x, int y) {
 		return	x >= 0 && y >= 0 &&
-				x < GameWindow.GRID_X_SPACES &&
-				y < GameWindow.GRID_Y_SPACES &&
+				x < GameWindow.GRID_ROWS &&
+				y < GameWindow.GRID_COLUMNS &&
 				actors[x][y] != null;
 	}
 	
