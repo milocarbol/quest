@@ -41,9 +41,10 @@ public class HealthBar extends InfoComponent {
 	@Override
 	public void draw(Graphics g) {
 		int widthOfHealth = computeWidthOfHealth();
+		
 		g.setColor(healthColor);
 		g.fillRect(x, y, widthOfHealth, height);
 		g.setColor(damagedColor);
-		g.fillRect(widthOfHealth, y, width - widthOfHealth, height);
+		g.fillRect(x + widthOfHealth, y, width - widthOfHealth, height);
 	}
 }

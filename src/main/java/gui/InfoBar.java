@@ -39,6 +39,9 @@ public class InfoBar extends JComponent {
 	/** The coordinates for the health bar **/
 	private static final int healthBarX = 20, healthBarY = 20;
 	
+	/** The coordinates for the power bar **/
+	private static final int powerBarX = 200, powerBarY = 20;
+	
 	/**
 	 * Creates a new InfoBar.
 	 * @param x - The x-coordinate of the top-left corner
@@ -54,6 +57,7 @@ public class InfoBar extends JComponent {
 		this.inputHandler = inputHandler;
 		
 		this.components.add(new HealthBar(absoluteX(healthBarX), absoluteY(healthBarY), game.getPlayer()));
+		this.components.add(new PowerBar(absoluteX(powerBarX), absoluteY(powerBarY), game.getPlayer().getPowerController()));
 		
 		this.setSize(WIDTH, HEIGHT);
 	}

@@ -18,7 +18,7 @@ public class Power {
 	public static final String DEFAULT_MELEE_IMAGE = "default_power_melee";
 	
 	/** The default ranged power image **/
-	public static final String DEFAULT_RANGED_IMAGE = "default_power_range";
+	public static final String DEFAULT_RANGED_IMAGE = "default_power_ranged";
 	
 	/** The unavailable power image **/
 	public static final String UNAVAILABLE_IMAGE = "power_unavailable";
@@ -31,6 +31,9 @@ public class Power {
 	
 	/** The default damage for a power **/
 	public static final int DEFAULT_DAMAGE = 10;
+	
+	/** The default range for a ranged power **/
+	public static final int DEFAULT_RANGE = 10;
 	
 	/** The name of this power **/
 	private String name;
@@ -120,6 +123,6 @@ public class Power {
 	 * @return A default ranged power instance.
 	 */
 	public static Power createDefaultRangedPower() {
-		return new Power(DEFAULT_RANGED_NAME, DEFAULT_RANGED_IMAGE, DEFAULT_DAMAGE);
+		return new Power(DEFAULT_RANGED_NAME, DEFAULT_RANGED_IMAGE, DEFAULT_RANGE, 0, DEFAULT_DAMAGE);
 	}
 }

@@ -15,8 +15,6 @@ import entity.actor.power.Power;
  */
 public abstract class Actor extends Entity {	
 	
-	public static final int NUMBER_OF_POWERS = 2;
-	
 	/** LOCATION DATA **/
 	
 	/** Current grid space **/
@@ -56,6 +54,7 @@ public abstract class Actor extends Entity {
 	/** The speed of the actor, in multiples of the Actor Controller refresh timer **/
 	private int speed;
 	
+	/** The controller for the actor's powers **/
 	private PowerController powerController;
 	
 	
@@ -105,6 +104,9 @@ public abstract class Actor extends Entity {
 	
 	/** @return the actor's maximum health **/
 	public int getMaximumHealth() { return maximumHealth; }
+	
+	/** @return This actor's power controller **/
+	public PowerController getPowerController() { return powerController; }
 	
 	/** INTERACTION **/
 	

@@ -1,5 +1,7 @@
 package control;
 
+import java.awt.Image;
+
 import entity.actor.power.Power;
 
 /**
@@ -56,10 +58,34 @@ public class PowerController {
 	 * @param index - The index of the new power. Must be > 0 and < number of powers.
 	 */
 	public void selectPower(int index) {
-		if (index > 0 && index < powers.length && powers[index].isUsable())
+		if (isValidIndex(index) && powers[index].isUsable())
 			activePower = powers[index];
+	}
+	
+	/**
+	 * Gets the image for a power.
+	 * @param index - The index of the power
+	 * @return The image for the power
+	 */
+	public Image getPowerImage(int index) {
+		if (isValidIndex(index))
+			return powers[index].getImage();
+		else
+			throw new RuntimeException("Power index " + index + " is out of range.");
+	}
+	
+	/**
+	 * Checks if an index is valid.
+	 * @param index - the index to check
+	 * @return True if the index is > 0 and < the number of powers
+	 */
+	private boolean isValidIndex(int index) {
+		return index >= 0 && index < powers.length;
 	}
 	
 	/** @return The currently active power **/
 	public Power getActivePower() { return activePower; }
+	
+	/** @return The number of powers **/
+	public int getNumberOfPowers() { return powers.length; }
 }
