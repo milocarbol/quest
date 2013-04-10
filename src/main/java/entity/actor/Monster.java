@@ -37,15 +37,10 @@ public class Monster extends Actor {
 	}
 	
 	/**
-	 * Either attacks the player if it is close enough, or move towards a destination.
+	 * Target the player.
 	 */
 	@Override
-	public void act() {
-		if (game.canAttack(game.getPlayer(), this, 1))
-			game.getPlayer().attack(getDamage());
-		else {
-			moveTo(game.getPlayer());
-			super.act();
-		}
+	public void begin() {
+		target(game.getPlayer());
 	}
 }

@@ -35,4 +35,12 @@ public class Player extends Actor {
 	public Player(int x, int y, Game game) {
 		super(x, y, MAXIMUM_HEALTH, SPEED, DEFAULT_DAMAGE, ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
 	}
+	
+	/**
+	 * Player doesn't require any initialisation.
+	 */
+	@Override
+	public void begin() {
+		
+	}
 }

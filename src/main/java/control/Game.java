@@ -51,6 +51,11 @@ public class Game {
 		this.actorController = new ActorController(this)
 									.withPlayer(player)
 									.withMonsters(monsters);
+		
+		this.player.begin();
+		for (Monster monster : monsters) {
+			monster.begin();
+		}
 	}
 	
 	/**
@@ -154,15 +159,14 @@ public class Game {
 	 * @param y - The y-coordinate of the space
 	 */
 	public void click(int x, int y) {
-		if (actors[x][y] == null)
+		if (actors[x][y] == null) {
 			player.moveTo(x, y);
+			player.stopTargeting();
+		}
 		else if (actors[x][y] == player)
 			; // TODO Healing spells or something could go here
 		else if (actors[x][y] instanceof Monster)
-			if (canAttack(actors[x][y], player, 1))
-				actors[x][y].attack(player.getDamage());
-			else
-				player.moveTo(actors[x][y]);
+			player.target(actors[x][y]);
 	}
 	
 	/**
@@ -178,10 +182,7 @@ public class Game {
 	/**
 	 * Polls all actors and updates their positions in the actor grid according to their current positions.
 	 */
-	public void refreshActors() {
-		for (Monster monster : monsters)
-			monster.moveTo(player);
-		
+	public void refreshActors() {		
 		for (int row = 0; row < actors.length; row++)
 			for (int column = 0; column < actors[row].length; column++)
 				if (row == player.getXPosition() && column == player.getYPosition())

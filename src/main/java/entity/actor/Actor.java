@@ -61,6 +61,9 @@ public abstract class Actor extends Entity {
 	/** The game this actor is a part of **/
 	protected final Game game;
 	
+	/** The actor (if any) this actor is targeting **/
+	private Actor target;
+	
 	/**
 	 * Creates a new actor.
 	 * @param x - The initial x-coordinate.
@@ -105,6 +108,11 @@ public abstract class Actor extends Entity {
 	/** INTERACTION **/
 	
 	/**
+	 * Once all game components have been set, activate the actor.
+	 */
+	public abstract void begin();
+	
+	/**
 	 * Deals damage to the actor.
 	 * @param damage - the amount to reduce current health by.
 	 */
@@ -118,10 +126,35 @@ public abstract class Actor extends Entity {
 	}
 	
 	/**
-	 * Moves the actor towards its target location.
+	 * If the actor has a target actor, move towards it and attack if possible.
+	 * If the actor doesn't have a target, move towards its destination.
 	 */
 	public void act() {
-		move();
+		if (target != null) {
+			moveTo(target.getXPosition(), target.getYPosition());
+			if (game.canAttack(target, this, 1))
+				target.attack(getDamage());
+			else
+				move();
+		}
+		else
+			move();
+	}
+	
+	/**
+	 * Targets an actor.
+	 * Actors will move towards targets and attack when possible.
+	 * @param target - The target actor
+	 */
+	public void target(Actor target) {
+		this.target = target;
+	}
+	
+	/**
+	 * Stops targeting, allowing free movement.
+	 */
+	public void stopTargeting() {
+		this.target = null;
 	}
 	
 	/** NAVIGATION **/
