@@ -157,7 +157,7 @@ public class Game {
 	 * @param x - The x-coordinate of the space
 	 * @param y - The y-coordinate of the space
 	 */
-	public void click(int x, int y) {
+	public void clickGridSpace(int x, int y) {
 		if (actors[x][y] == null) {
 			player.moveTo(x, y);
 			player.stopTargeting();

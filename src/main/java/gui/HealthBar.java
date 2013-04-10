@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 
 import entity.actor.Player;
 
@@ -47,4 +48,7 @@ public class HealthBar extends InfoComponent {
 		g.setColor(damagedColor);
 		g.fillRect(x + widthOfHealth, y, width - widthOfHealth, height);
 	}
+	
+	/** Does nothing **/
+	public void click(MouseEvent click) {}
 }

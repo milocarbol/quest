@@ -15,7 +15,7 @@ public class InputHandler {
 	private final Game game;
 	
 	/**
-	 * Creates a new KeyHandler.
+	 * Creates a new InputHandler.
 	 * @param game - The game to control.
 	 */
 	public InputHandler(Game game) {
@@ -34,10 +34,10 @@ public class InputHandler {
 	 * Handles a mouse click.
 	 * @param click - The click event to handle.
 	 */
-	public void act(MouseEvent click) {
+	public void handle(MouseEvent click) {
 		int x = Game.pixelToGridSpace(click.getX());
 		int y = Game.pixelToGridSpace(click.getY());
 		
-		game.click(x, y);
+		game.clickGridSpace(x, y);
 	}
 }

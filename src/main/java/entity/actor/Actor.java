@@ -134,12 +134,18 @@ public abstract class Actor extends Entity {
 	 */
 	public void act() {
 		if (target != null) {
-			moveTo(target.getXPosition(), target.getYPosition());
-			Power activePower = powerController.getActivePower();
-			if (game.canAttack(target, this, activePower.getRange()))
-				activePower.use(target);
-			else
-				move();
+			if (target.isActive()) {
+				moveTo(target.getXPosition(), target.getYPosition());
+				Power activePower = powerController.getActivePower();
+				if (game.canAttack(target, this, activePower.getRange()))
+					activePower.use(target);
+				else
+					move();
+			}
+			else {
+				stopTargeting();
+				moveTo(currentXPosition, currentYPosition);
+			}
 		}
 		else
 			move();

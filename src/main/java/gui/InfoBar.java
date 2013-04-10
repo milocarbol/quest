@@ -2,29 +2,24 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JComponent;
 
-import control.Game;
-import control.InputHandler;
+import entity.actor.Player;
 
 /**
  * Information bar showing all of the player's stats, abilities, etc.
  * @author Milo
  * @since 6 April 2013
  */
-public class InfoBar extends JComponent {
+public class InfoBar extends JComponent implements MouseListener {
 	
 	/** Default serial version UID **/
 	private static final long serialVersionUID = 1L;
-	
-	/** The game this bar acts on. **/
-	private final Game game;
-	
-	/** The handler for any input to the bar **/
-	private final InputHandler inputHandler;
 	
 	/** Dimensions of the bar **/
 	public static final int	WIDTH = 1000,
@@ -49,17 +44,16 @@ public class InfoBar extends JComponent {
 	 * @param game - The game to interact with
 	 * @param inputHandler - The input handler to handle input
 	 */
-	public InfoBar(int x, int y, Game game, InputHandler inputHandler) {
+	public InfoBar(int x, int y, Player player) {
 		this.x = x;
 		this.y = y;
 		
-		this.game = game;
-		this.inputHandler = inputHandler;
-		
-		this.components.add(new HealthBar(absoluteX(healthBarX), absoluteY(healthBarY), game.getPlayer()));
-		this.components.add(new PowerBar(absoluteX(powerBarX), absoluteY(powerBarY), game.getPlayer().getPowerController()));
+		this.components.add(new HealthBar(absoluteX(healthBarX), absoluteY(healthBarY), player));
+		this.components.add(new PowerBar(absoluteX(powerBarX), absoluteY(powerBarY), player.getPowerController()));
 		
 		this.setSize(WIDTH, HEIGHT);
+		
+		addMouseListener(this);
 	}
 	
 	/**
@@ -86,4 +80,22 @@ public class InfoBar extends JComponent {
 		for (InfoComponent component : components)
 			component.draw(g);
 	}
+
+	/**
+	 * Handles a click.
+	 */
+	public void mouseClicked(MouseEvent click) {
+		for (InfoComponent component : components)
+			if (component.isClickedOn(click))
+				component.click(click);
+	}
+
+	/** Does nothing **/
+	public void mouseEntered(MouseEvent click) {}
+	/** Does nothing **/
+	public void mouseExited(MouseEvent click) {}
+	/** Does nothing **/
+	public void mousePressed(MouseEvent click) {}
+	/** Does nothing **/
+	public void mouseReleased(MouseEvent click) {}
 }

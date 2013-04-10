@@ -65,7 +65,7 @@ public class QuestUI extends JFrame implements ActionListener {
 		GameWindow screen = new GameWindow(game, inputHandler);
 		screen.setBounds(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		
-		InfoBar infoBar = new InfoBar(0, GameWindow.HEIGHT, game, inputHandler);
+		InfoBar infoBar = new InfoBar(0, GameWindow.HEIGHT, game.getPlayer());
 		infoBar.setBounds(0, GameWindow.HEIGHT, InfoBar.WIDTH, InfoBar.HEIGHT);
 		
 		components.add(screen);

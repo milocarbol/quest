@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 
 /**
  * Components like health bars drawn on the player's info bar.
@@ -29,5 +30,29 @@ public abstract class InfoComponent {
 		this.height = height;
 	}
 	
+	/**
+	 * Checks if a click intersects the component.
+	 * @param click - The click event
+	 * @return True if it intersects, false if not.
+	 */
+	public boolean isClickedOn(MouseEvent click) {
+		int clickX = click.getX();
+		int clickY = click.getY();
+		
+		return
+				clickX > x && clickX < x + width &&
+				clickY > y && clickY < y + height;
+	}
+	
+	/**
+	 * Draws the component
+	 * @param g - The graphics object to draw with
+	 */
 	public abstract void draw(Graphics g);
+	
+	/**
+	 * Handles a click
+	 * @param click - The click event
+	 */
+	public abstract void click(MouseEvent click);
 }

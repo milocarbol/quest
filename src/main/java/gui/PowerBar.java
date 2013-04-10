@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 
 import control.PowerController;
 
@@ -40,8 +41,41 @@ public class PowerBar extends InfoComponent {
 		g.setColor(Color.black);
 		g.drawRect(x, y, width, height);
 		
-		for (int index = 0; index < powerController.getNumberOfPowers(); index++) {
+		for (int index = 0; index < powerController.getNumberOfPowers(); index++)
 			g.drawImage(powerController.getPowerImage(index), x + IMAGE_SPACING + index * (IMAGE_SIZE + IMAGE_SPACING), y + IMAGE_SPACING, IMAGE_SIZE, IMAGE_SIZE, null);
-		}
+	}
+	
+	/**
+	 * Handles a click
+	 */
+	public void click(MouseEvent click) {
+		for (int index = 0; index < powerController.getNumberOfPowers(); index++)
+			if (powerIsClicked(index, click))
+				powerController.selectPower(index);
+	}
+	
+	private boolean powerIsClicked(int index, MouseEvent click) {
+		int clickX = click.getX();
+		int clickY = click.getY();
+		
+		return	clickX > powerX(index) && clickX < powerX(index) + IMAGE_SIZE &&
+				clickY > powerY() && clickY < powerY() + IMAGE_SIZE;
+	}
+	
+	/**
+	 * Computes the x-coordinate for a power
+	 * @param index - The index of the power
+	 * @return The x-coordinate of the power
+	 */
+	private int powerX(int index) {
+		return x + IMAGE_SPACING + index * (IMAGE_SIZE + IMAGE_SPACING);
+	}
+	
+	/**
+	 * Computes the y-coordinate for a power
+	 * @return The y-coordinate of the power
+	 */
+	private int powerY() {
+		return y + IMAGE_SPACING;
 	}
 }
