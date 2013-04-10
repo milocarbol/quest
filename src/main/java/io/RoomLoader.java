@@ -14,14 +14,14 @@ import java.io.PrintWriter;
 
 import data.Files;
 
-import level.Layout;
+import level.Room;
 
 /**
  * Loads map layouts from files.
  * @author Milo
  * @since 8 April 2013
  */
-public class LayoutLoader {
+public class RoomLoader {
 	/** The image loader **/
 	private Toolkit imageKit = Toolkit.getDefaultToolkit();
 	
@@ -39,14 +39,14 @@ public class LayoutLoader {
 	
 	/**
 	 * Creates a map from a file.
-	 * @param mapFile - The layout file name (must be a MAP file)
+	 * @param roomFile - The layout file name (must be a MAP file)
 	 * @return The grid of tiles (images) to paint as the background.
 	 * @throws IOException if the file can't be found or the layout doesn't match the standard dimensions.
 	 */
-	public Image[][] loadMap(String mapFile) throws IOException {
+	public Image[][] loadRoom(String roomFile) throws IOException {
 		Image[][] tiles = new Image[GameWindow.GRID_ROWS][GameWindow.GRID_COLUMNS];
 		
-		File file = new File(mapFile);
+		File file = new File(roomFile);
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		
 		int row = 0;
@@ -55,7 +55,7 @@ public class LayoutLoader {
 			String[] tileStrings = line.split(separator);	
 			if (tileStrings.length != GameWindow.GRID_COLUMNS || row == GameWindow.GRID_ROWS) {
 				reader.close();
-				throw new IOException("Layout dimensions are incorrect for file " + mapFile);
+				throw new IOException("Layout dimensions are incorrect for file " + roomFile);
 			}
 			else
 				for (int column = 0; column < GameWindow.GRID_COLUMNS; column++) {
@@ -70,11 +70,11 @@ public class LayoutLoader {
 	}
 	
 	/**
-	 * Creates a test map: walls on the borders and floor tiles everywhere else.
+	 * Creates a test room file: walls on the borders and floor tiles everywhere else.
 	 * @throws IOException if the file can't be created.
 	 */
-	public static void createTestMap() throws IOException {
-		File file = new File(Layout.TEST_MAP);
+	public static void createTestRoom() throws IOException {
+		File file = new File(Room.TEST_ROOM);
 		PrintWriter outWriter = new PrintWriter(new BufferedWriter(new FileWriter(file)), true);
 		
 		for (int row = 0; row < GameWindow.GRID_ROWS; row++) {

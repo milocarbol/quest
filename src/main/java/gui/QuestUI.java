@@ -1,6 +1,6 @@
 package gui;
 
-import io.LayoutLoader;
+import io.RoomLoader;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -96,7 +96,7 @@ public class QuestUI extends JFrame implements ActionListener {
 	 */
 	public static void main(String[] args) {
 		try {
-			LayoutLoader.createTestMap();
+			RoomLoader.createTestRoom();
 			new QuestUI(new Game());
 		} catch (IOException e) {
 			throw new RuntimeException(e);

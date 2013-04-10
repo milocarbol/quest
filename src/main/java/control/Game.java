@@ -1,13 +1,13 @@
 package control;
 
 import gui.GameWindow;
-import io.LayoutLoader;
+import io.RoomLoader;
 
 import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
 
-import level.Layout;
+import level.Room;
 import actor.Actor;
 import actor.Monster;
 import actor.Player;
@@ -32,17 +32,17 @@ public class Game {
 	private ActorController actorController;
 	
 	/** The current map **/
-	private Layout map;
+	private Room map;
 	
 	/** The layout loader used for loading maps **/
-	private LayoutLoader layoutLoader;
+	private RoomLoader layoutLoader;
 	
 	/**
 	 * Makes a new game and puts the player and monsters in place for testing.
 	 */
 	public Game() {
-		this.layoutLoader = new LayoutLoader();		
-		this.map = new Layout(layoutLoader);
+		this.layoutLoader = new RoomLoader();		
+		this.map = new Room(layoutLoader);
 		
 		Point startLocation = map.getStartLocation();
 		this.player = new Player(startLocation.x, startLocation.y, this);
@@ -75,7 +75,7 @@ public class Game {
 	public Player getPlayer() { return player; }
 	
 	/** @return The map for drawing **/
-	public Layout getMapLayout() { return map; }
+	public Room getMapLayout() { return map; }
 	
 	/**
 	 * Fetches the actor on a space.

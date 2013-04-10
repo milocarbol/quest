@@ -9,7 +9,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JComponent;
 
-import level.Layout;
+import level.Room;
 import actor.Actor;
 import actor.Monster;
 import actor.Player;
@@ -61,7 +61,7 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	 * Animates.
 	 */
 	public void paint(Graphics g) {
-		Layout layout = game.getMapLayout();
+		Room layout = game.getMapLayout();
 		for (int row = 0; row < GRID_ROWS; row++)
 			for (int column = 0; column < GRID_COLUMNS; column++) {
 				g.drawImage(layout.tileAt(row, column), row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);

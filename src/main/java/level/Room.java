@@ -1,6 +1,6 @@
 package level;
 
-import io.LayoutLoader;
+import io.RoomLoader;
 
 import java.awt.Image;
 import java.awt.Point;
@@ -9,14 +9,14 @@ import java.io.IOException;
 import data.Files;
 
 /**
- * Map layout. Drawn beneath actors. Stores level layout data.
+ * Map layout for a room. Drawn beneath actors. Stores room layout data.
  * @author Milo
  * @since 8 April 2013
  */
-public class Layout {
+public class Room {
 	
 	/** The test map file **/
-	public static final String TEST_MAP = Files.MAPS + "testmap.map";
+	public static final String TEST_ROOM = Files.MAPS + "testmap.map";
 	
 	/** The tile map. **/
 	private Image[][] tiles;
@@ -25,11 +25,11 @@ public class Layout {
 	private Point playerStartLocation = new Point(1, 1);
 	
 	/**
-	 * Creates a new map and fills it with tiles.
+	 * Creates a new room and fills it with tiles.
 	 */
-	public Layout(LayoutLoader loader) {
+	public Room(RoomLoader loader) {
 		try {
-			tiles = loader.loadMap(TEST_MAP);
+			tiles = loader.loadRoom(TEST_ROOM);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
