@@ -53,14 +53,13 @@ public class Game {
 									.withMonsters(monsters);
 		
 		this.player.begin();
-		for (Monster monster : monsters) {
+		for (Monster monster : monsters)
 			monster.begin();
-		}
 	}
 	
 	/**
 	 * Builds the initial list of monsters in the room.
-	 * TODO This is only for development purposes.
+	 * TODO This is only for development/testing purposes.
 	 * @return the list of test monsters.
 	 */
 	private List<Monster> makeMonsters() {

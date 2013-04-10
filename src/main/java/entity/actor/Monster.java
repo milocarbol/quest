@@ -2,6 +2,7 @@ package entity.actor;
 
 import io.ImageLoader;
 import control.Game;
+import control.PowerController;
 
 
 /**
@@ -33,7 +34,7 @@ public class Monster extends Actor {
 	 * @param game - The game this monster is a part of.
 	 */
 	public Monster(int x, int y, Game game) {
-		super(x, y, DEFAULT_HEALTH, DEFAULT_MONSTER_SPEED, DEFAULT_DAMAGE, ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
+		super(x, y, DEFAULT_HEALTH, DEFAULT_MONSTER_SPEED, new PowerController(), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
 	}
 	
 	/**

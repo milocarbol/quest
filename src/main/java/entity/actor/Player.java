@@ -2,6 +2,7 @@ package entity.actor;
 
 import io.ImageLoader;
 import control.Game;
+import control.PowerController;
 
 
 /**
@@ -33,7 +34,7 @@ public class Player extends Actor {
 	 * @param game - The game this player is a part of.
 	 */
 	public Player(int x, int y, Game game) {
-		super(x, y, MAXIMUM_HEALTH, SPEED, DEFAULT_DAMAGE, ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
+		super(x, y, MAXIMUM_HEALTH, SPEED, new PowerController(true), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
 	}
 	
 	/**

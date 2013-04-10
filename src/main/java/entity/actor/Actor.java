@@ -3,7 +3,9 @@ package entity.actor;
 import java.awt.Image;
 
 import control.Game;
+import control.PowerController;
 import entity.Entity;
+import entity.actor.power.Power;
 
 
 /**
@@ -12,6 +14,8 @@ import entity.Entity;
  * @since 5 April 2013
  */
 public abstract class Actor extends Entity {	
+	
+	public static final int NUMBER_OF_POWERS = 2;
 	
 	/** LOCATION DATA **/
 	
@@ -52,8 +56,7 @@ public abstract class Actor extends Entity {
 	/** The speed of the actor, in multiples of the Actor Controller refresh timer **/
 	private int speed;
 	
-	/** The damage this actor deals to other actors **/
-	private int damage;
+	private PowerController powerController;
 	
 	
 	/** INTERACTION DATA **/
@@ -71,7 +74,7 @@ public abstract class Actor extends Entity {
 	 * @param speed - The speed of the actor, in milliseconds per grid space.
 	 * @param game - The game this actor is a part of.
 	 */
-	public Actor(int x, int y, int maximumHealth, int speed, int damage, Image aliveImage, Image deadImage, Game game) {
+	public Actor(int x, int y, int maximumHealth, int speed, PowerController powerController, Image aliveImage, Image deadImage, Game game) {
 		super(aliveImage, deadImage, true);
 		
 		currentXPosition = targetXPosition = x;
@@ -80,15 +83,13 @@ public abstract class Actor extends Entity {
 		this.currentHealth = this.maximumHealth = maximumHealth;
 		
 		this.speed = speed;
-		this.damage = damage;
+		
+		this.powerController = powerController;
 		
 		this.game = game;
 	}
 	
 	/** ACCESSORS **/
-	
-	/** @return The damage this actor deals to other actors **/
-	public int getDamage() { return damage; }
 	
 	/** @return the actor's speed (in multiples of the actor controller's refresh rate) **/
 	public int getSpeed() { return speed; }
@@ -132,8 +133,9 @@ public abstract class Actor extends Entity {
 	public void act() {
 		if (target != null) {
 			moveTo(target.getXPosition(), target.getYPosition());
-			if (game.canAttack(target, this, 1))
-				target.attack(getDamage());
+			Power activePower = powerController.getActivePower();
+			if (game.canAttack(target, this, activePower.getRange()))
+				activePower.use(target);
 			else
 				move();
 		}
