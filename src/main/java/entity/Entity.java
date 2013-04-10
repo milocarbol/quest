@@ -2,8 +2,6 @@ package entity;
 
 import java.awt.Image;
 
-import entity.actor.Actor;
-
 /**
  * An entity on the map. Entities block Actor movement and can interact.
  * @author Milo
@@ -38,14 +36,6 @@ public class Entity {
 			this.currentImage = activeImage;
 		else
 			this.currentImage = inactiveImage;
-	}
-	
-	/**
-	 * Interacts with an actor. Should be overridden by subclass.
-	 * @param target - The actor who is being interacted with.
-	 */
-	public void interactWith(Actor target) {
-		
 	}
 	
 	/**
