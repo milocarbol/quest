@@ -1,4 +1,4 @@
-package actor;
+package entity.actor;
 
 import java.awt.Color;
 

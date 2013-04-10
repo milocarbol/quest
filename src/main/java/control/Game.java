@@ -1,5 +1,8 @@
 package control;
 
+import entity.actor.Actor;
+import entity.actor.Monster;
+import entity.actor.Player;
 import gui.GameWindow;
 import io.RoomLoader;
 
@@ -8,9 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import level.Room;
-import actor.Actor;
-import actor.Monster;
-import actor.Player;
 
 /**
  * Data regarding dungeon layout, player position, etc.

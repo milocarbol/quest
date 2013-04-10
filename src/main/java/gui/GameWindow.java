@@ -10,11 +10,11 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JComponent;
 
 import level.Room;
-import actor.Actor;
-import actor.Monster;
-import actor.Player;
 import control.Game;
 import control.InputHandler;
+import entity.actor.Actor;
+import entity.actor.Monster;
+import entity.actor.Player;
 
 /**
  * The part of the screen which renders the gameplay on which to animate.

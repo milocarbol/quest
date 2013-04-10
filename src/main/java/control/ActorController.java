@@ -8,8 +8,8 @@ import java.util.List;
 
 import javax.swing.Timer;
 
-import actor.Monster;
-import actor.Player;
+import entity.actor.Monster;
+import entity.actor.Player;
 
 /**
  * Controller class to trigger actor events.
