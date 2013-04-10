@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JComponent;
 
@@ -31,6 +33,12 @@ public class InfoBar extends JComponent {
 	/** X- and Y-coordinates of the top-left corner of the bar **/
 	private final int x, y;
 	
+	/** Components to render **/
+	private List<InfoComponent> components = new LinkedList<InfoComponent>();
+	
+	/** The coordinates for the health bar **/
+	private static final int healthBarX = 20, healthBarY = 20;
+	
 	/**
 	 * Creates a new InfoBar.
 	 * @param x - The x-coordinate of the top-left corner
@@ -44,6 +52,8 @@ public class InfoBar extends JComponent {
 		
 		this.game = game;
 		this.inputHandler = inputHandler;
+		
+		this.components.add(new HealthBar(absoluteX(healthBarX), absoluteY(healthBarY), game.getPlayer()));
 		
 		this.setSize(WIDTH, HEIGHT);
 	}
@@ -68,11 +78,8 @@ public class InfoBar extends JComponent {
 	public void paint(Graphics g) {
 		g.setColor(Color.gray);
 		g.fillRect(absoluteX(0), absoluteY(0), absoluteX(WIDTH), absoluteY(HEIGHT));
-		
-		int health = game.getPlayer().getCurrentHealth();
-		g.setColor(Color.red);
-		g.fillRect(absoluteX(20), absoluteY(20), health, 20);
-		g.setColor(Color.white);
-		g.fillRect(absoluteX(20 + health), absoluteY(20), game.getPlayer().getMaximumHealth() - health, 20);
+
+		for (InfoComponent component : components)
+			component.draw(g);
 	}
 }
