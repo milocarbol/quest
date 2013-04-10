@@ -86,7 +86,7 @@ public class ActorController implements ActionListener {
 			}
 			
 			for (Monster monster : monsters) {
-				if (monster.isAlive() && tickCount % monster.getSpeed() == 0) {
+				if (monster.isActive() && tickCount % monster.getSpeed() == 0) {
 					monster.act();
 					game.refreshActors();
 				}

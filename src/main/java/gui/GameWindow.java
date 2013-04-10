@@ -13,8 +13,6 @@ import level.Room;
 import control.Game;
 import control.InputHandler;
 import entity.actor.Actor;
-import entity.actor.Monster;
-import entity.actor.Player;
 
 /**
  * The part of the screen which renders the gameplay on which to animate.
@@ -72,13 +70,7 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 			for (int column = 0; column < GRID_COLUMNS; column++) {
 				Actor actor = actors[row][column];
 				if (actor != null) {
-					g.setColor(actor.getColor());
-					if (actor instanceof Player) {
-						g.fillRect(row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE);
-					}
-					else if (actor instanceof Monster) {
-						g.fillRect(row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE);
-					}
+					g.drawImage(actor.getImage(), row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
 				}
 			}
 	}

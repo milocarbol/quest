@@ -1,8 +1,9 @@
 package entity.actor;
 
-import java.awt.Color;
+import java.awt.Image;
 
 import control.Game;
+import entity.Entity;
 
 
 /**
@@ -10,7 +11,7 @@ import control.Game;
  * @author Milo
  * @since 5 April 2013
  */
-public abstract class Actor {	
+public abstract class Actor extends Entity {	
 	
 	/** LOCATION DATA **/
 	
@@ -54,12 +55,6 @@ public abstract class Actor {
 	/** The damage this actor deals to other actors **/
 	private int damage;
 	
-	/** Whether or not this actor is still alive. Dead actors do not act **/
-	private boolean isAlive = true;
-	
-	/** The colors for this actor, dead or alive. TODO change to images **/
-	private Color aliveColor, deadColor, color;
-	
 	
 	/** INTERACTION DATA **/
 	
@@ -73,7 +68,9 @@ public abstract class Actor {
 	 * @param speed - The speed of the actor, in milliseconds per grid space.
 	 * @param game - The game this actor is a part of.
 	 */
-	public Actor(int x, int y, int maximumHealth, int speed, int damage, Color aliveColor, Color deadColor, Game game) {
+	public Actor(int x, int y, int maximumHealth, int speed, int damage, Image aliveImage, Image deadImage, Game game) {
+		super(aliveImage, deadImage, true);
+		
 		currentXPosition = targetXPosition = x;
 		currentYPosition = targetYPosition = y;
 		
@@ -81,9 +78,6 @@ public abstract class Actor {
 		
 		this.speed = speed;
 		this.damage = damage;
-		this.aliveColor = aliveColor;
-		this.deadColor = deadColor;
-		this.color = aliveColor;
 		
 		this.game = game;
 	}
@@ -92,9 +86,6 @@ public abstract class Actor {
 	
 	/** @return The damage this actor deals to other actors **/
 	public int getDamage() { return damage; }
-	
-	/** @return Whether or not this actor is still alive **/
-	public boolean isAlive() { return isAlive; }
 	
 	/** @return the actor's speed (in multiples of the actor controller's refresh rate) **/
 	public int getSpeed() { return speed; }
@@ -111,9 +102,6 @@ public abstract class Actor {
 	/** @return the actor's maximum health **/
 	public int getMaximumHealth() { return maximumHealth; }
 	
-	/** @return The color to draw this actor. TODO change this to images **/
-	public Color getColor() { return color; }
-	
 	/** INTERACTION **/
 	
 	/**
@@ -125,8 +113,7 @@ public abstract class Actor {
 			currentHealth -= damage;
 		else {
 			currentHealth = 0;
-			isAlive = false;
-			color = deadColor;
+			deactivate();
 		}
 	}
 	

@@ -1,7 +1,6 @@
 package entity.actor;
 
-import java.awt.Color;
-
+import io.ImageLoader;
 import control.Game;
 
 
@@ -21,11 +20,11 @@ public class Player extends Actor {
 	/** Player's default damage for testing **/
 	public static final int DEFAULT_DAMAGE = 20;
 	
-	/** The color to draw the player while they're alive **/
-	public static final Color DEFAULT_ALIVE_COLOR = Color.cyan;
+	/** The image file to draw while the player is alive **/
+	public static final String DEFAULT_ALIVE_IMAGE = "default_player";
 	
-	/** The color to draw the player while they're dead **/
-	public static final Color DEFAULT_DEAD_COLOR = Color.blue;
+	/** The image file to draw while the player is dead **/
+	public static final String DEFAULT_DEAD_IMAGE = "default_player_dead";
 	
 	/**
 	 * Creates a new player.
@@ -34,6 +33,6 @@ public class Player extends Actor {
 	 * @param game - The game this player is a part of.
 	 */
 	public Player(int x, int y, Game game) {
-		super(x, y, MAXIMUM_HEALTH, SPEED, DEFAULT_DAMAGE, DEFAULT_ALIVE_COLOR, DEFAULT_DEAD_COLOR, game);
+		super(x, y, MAXIMUM_HEALTH, SPEED, DEFAULT_DAMAGE, ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
 	}
 }

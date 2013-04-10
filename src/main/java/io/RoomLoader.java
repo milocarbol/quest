@@ -3,7 +3,6 @@ package io;
 import gui.GameWindow;
 
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,8 +10,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import data.Files;
 
 import level.Room;
 
@@ -22,8 +19,6 @@ import level.Room;
  * @since 8 April 2013
  */
 public class RoomLoader {
-	/** The image loader **/
-	private Toolkit imageKit = Toolkit.getDefaultToolkit();
 	
 	/** The deliminator for tiles in the file **/
 	private static final String separator = ":";
@@ -33,9 +28,6 @@ public class RoomLoader {
 	
 	/** The file name for wall floor 00 **/
 	private static final String floor_00 = "floor_00";
-	
-	/** The image type used **/
-	private static final String imageType = "png";
 	
 	/**
 	 * Creates a map from a file.
@@ -59,7 +51,7 @@ public class RoomLoader {
 			}
 			else
 				for (int column = 0; column < GameWindow.GRID_COLUMNS; column++) {
-					tiles[row][column] = imageKit.getImage(Files.IMAGES + tileStrings[column] + "." + imageType);
+					tiles[row][column] = ImageLoader.loadImage(tileStrings[column]);
 				}
 			row++;
 		}
