@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -68,6 +69,9 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 		for (int row = 0; row < GRID_ROWS; row++)
 			for (int column = 0; column < GRID_COLUMNS; column++) {
 				g.drawImage(layout.tileAt(row, column), row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
+				Image feature = layout.featureImageAt(row, column);
+				if (feature != null)
+					g.drawImage(feature, row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
 			}
 		
 		Actor[][] actors = game.getActors();

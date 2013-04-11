@@ -32,7 +32,7 @@ public class Game {
 	private ActorController actorController;
 	
 	/** The current map **/
-	private Room map;
+	private Room room;
 	
 	/** The layout loader used for loading maps **/
 	private RoomLoader layoutLoader;
@@ -42,9 +42,9 @@ public class Game {
 	 */
 	public Game() {
 		this.layoutLoader = new RoomLoader();		
-		this.map = new Room(layoutLoader);
+		this.room = new Room(layoutLoader, this);
 		
-		Point startLocation = map.getStartLocation();
+		Point startLocation = room.getStartLocation();
 		this.player = new Player(startLocation.x, startLocation.y, this);
 		this.monsters = makeMonsters();
 		
@@ -64,9 +64,9 @@ public class Game {
 	 */
 	private List<Monster> makeMonsters() {
 		monsters = new LinkedList<Monster>();
-		monsters.add(new Monster(GameWindow.GRID_ROWS - 1, GameWindow.GRID_COLUMNS - 1, this));
-		monsters.add(new Monster(GameWindow.GRID_ROWS - 1, 0, this));
-		monsters.add(new Monster(0, GameWindow.GRID_COLUMNS - 1, this));
+		monsters.add(new Monster(GameWindow.GRID_ROWS - 2, GameWindow.GRID_COLUMNS - 2, this));
+		monsters.add(new Monster(GameWindow.GRID_ROWS - 2, 1, this));
+		monsters.add(new Monster(1, GameWindow.GRID_COLUMNS - 2, this));
 		return monsters;
 	}
 	
@@ -79,7 +79,7 @@ public class Game {
 	public Player getPlayer() { return player; }
 	
 	/** @return The map for drawing **/
-	public Room getMapLayout() { return map; }
+	public Room getMapLayout() { return room; }
 	
 	/**
 	 * Fetches the actor on a space.
@@ -103,7 +103,8 @@ public class Game {
 		boolean isFree =	x >= 0 && y >= 0 &&
 							x < GameWindow.GRID_ROWS &&
 							y < GameWindow.GRID_COLUMNS &&
-							actors[x][y] == null;
+							actors[x][y] == null &&
+							room.featureAt(x, y) == null;
 		
 		return isFree;	
 	}

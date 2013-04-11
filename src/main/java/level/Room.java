@@ -5,9 +5,11 @@ import java.awt.Image;
 import java.awt.Point;
 import java.io.IOException;
 
+import loader.RoomData;
 import loader.RoomLoader;
-
+import control.Game;
 import data.Files;
+import entity.Feature;
 
 /**
  * Map layout for a room. Drawn beneath actors. Stores room layout data.
@@ -22,15 +24,23 @@ public class Room {
 	/** The tile map. **/
 	private Image[][] tiles;
 	
+	/** Features of the room **/
+	private Feature[][] features;
+	
 	/** The start location for the player on this map **/
 	private Point playerStartLocation = new Point(1, 1);
 	
 	/**
-	 * Creates a new room and fills it with tiles.
+	 * Creates a new room and fills it with tiles and features.
+	 * @throws RuntimeException if the tiles and features loaded from the file don't match, or if the room can't be loaded.
 	 */
-	public Room(RoomLoader loader) {
+	public Room(RoomLoader loader, Game game) {
 		try {
-			tiles = loader.loadRoom(TEST_ROOM);
+			RoomData roomData = loader.loadRoom(TEST_ROOM, game);
+			tiles = roomData.tiles;
+			features = roomData.features;
+			if (tiles.length != features.length || tiles[0].length != features[0].length)
+				throw new RuntimeException("Tile and feature maps are of different sizes.");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -46,9 +56,37 @@ public class Room {
 	 * @return The tile at a given location, or null if the coordinates are invalid.
 	 */
 	public Image tileAt(int row, int column) {
-		if (row >= 0 && row < tiles.length &&
-			column >= 0 && column < tiles[0].length)
+		if (tileIsValid(row, column))
 			return tiles[row][column];
 		return null;
+	}
+	
+	/**
+	 * Gets the image for a feature to draw at a certain location
+	 * @param row - The x-coordinate of the desired feature
+	 * @param column - The y-coordinate of the desired feature
+	 * @return The image for the feature at a given location, or null if there isn't one.
+	 */
+	public Image featureImageAt(int row, int column) {
+		if (tileIsValid(row, column) && features[row][column] != null)
+			return features[row][column].getImage();
+		return null;
+	}
+	
+	/**
+	 * Gets the feature at a certain location
+	 * @param row - The x-coordinate of the desired featre
+	 * @param column - The y-coordinate of the desired feature
+	 * @return The feature at a given location, or null if the coordinates are invalid.
+	 */
+	public Feature featureAt(int row, int column) {
+		if (tileIsValid(row, column))
+			return features[row][column];
+		return null;
+	}
+	
+	private boolean tileIsValid(int row, int column) {
+		return	row >= 0 && row < tiles.length &&
+				column >= 0 && column < tiles[0].length;
 	}
 }
