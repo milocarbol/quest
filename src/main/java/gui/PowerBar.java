@@ -1,7 +1,10 @@
 package gui;
 
+import io.ImageLoader;
+
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 
 import control.PowerController;
@@ -13,14 +16,26 @@ import control.PowerController;
  */
 public class PowerBar extends InfoComponent {
 	
+	private static String activeEmblemSource = "active";
+	
 	/** X-and y-dimensions for the images **/
-	public static int IMAGE_SIZE = 50;
+	private static int imageSize = 50;
+	
+	/** X-and y-dimensions for the active indicator **/
+	private static int emblemSize = 15;
+	
+	/** X- and y-offsets for the emblem **/
+	private static int	emblemOffsetHorizontal = 20,
+						emblemOffsetVertical = 10;
 	
 	/** Spacing between images **/
-	public static int IMAGE_SPACING = 10;
+	private static int imageSpacing = 10;
 	
 	/** The power controller to interact with **/
 	private PowerController powerController;
+	
+	/** The image to render on an active power **/
+	private Image activeEmblem = ImageLoader.loadImage(activeEmblemSource);
 	
 	/**
 	 * Creates a new Power Bar
@@ -29,7 +44,7 @@ public class PowerBar extends InfoComponent {
 	 * @param powerController - The power controller to interact with
 	 */
 	public PowerBar(int x, int y, PowerController powerController) {
-		super(x, y, powerController.getNumberOfPowers() * (IMAGE_SIZE + IMAGE_SPACING) + IMAGE_SPACING, IMAGE_SIZE + 2 * IMAGE_SPACING);
+		super(x, y, powerController.getNumberOfPowers() * (imageSize + imageSpacing) + imageSpacing, imageSize + 2 * imageSpacing);
 		this.powerController = powerController;
 	}
 	
@@ -42,7 +57,10 @@ public class PowerBar extends InfoComponent {
 		g.drawRect(x, y, width, height);
 		
 		for (int index = 0; index < powerController.getNumberOfPowers(); index++)
-			g.drawImage(powerController.getPowerImage(index), x + IMAGE_SPACING + index * (IMAGE_SIZE + IMAGE_SPACING), y + IMAGE_SPACING, IMAGE_SIZE, IMAGE_SIZE, null);
+			g.drawImage(powerController.getPowerImage(index), powerX(index), powerY(), imageSize, imageSize, null);
+		
+		int activeIndex = powerController.getIndexOfActivePower();
+		g.drawImage(activeEmblem, powerX(activeIndex) + emblemOffsetHorizontal, powerY() + emblemOffsetVertical, emblemSize, emblemSize, null);
 	}
 	
 	/**
@@ -54,12 +72,18 @@ public class PowerBar extends InfoComponent {
 				powerController.selectPower(index);
 	}
 	
+	/**
+	 * Checks if a power is clicked.
+	 * @param index - The index of the power
+	 * @param click - The click event
+	 * @return True if the click is within the bounds of that power, false otherwise.
+	 */
 	private boolean powerIsClicked(int index, MouseEvent click) {
 		int clickX = click.getX();
 		int clickY = click.getY();
 		
-		return	clickX > powerX(index) && clickX < powerX(index) + IMAGE_SIZE &&
-				clickY > powerY() && clickY < powerY() + IMAGE_SIZE;
+		return	clickX > powerX(index) && clickX < powerX(index) + imageSize &&
+				clickY > powerY() && clickY < powerY() + imageSize;
 	}
 	
 	/**
@@ -68,7 +92,7 @@ public class PowerBar extends InfoComponent {
 	 * @return The x-coordinate of the power
 	 */
 	private int powerX(int index) {
-		return x + IMAGE_SPACING + index * (IMAGE_SIZE + IMAGE_SPACING);
+		return x + imageSpacing + index * (imageSize + imageSpacing);
 	}
 	
 	/**
@@ -76,6 +100,6 @@ public class PowerBar extends InfoComponent {
 	 * @return The y-coordinate of the power
 	 */
 	private int powerY() {
-		return y + IMAGE_SPACING;
+		return y + imageSpacing;
 	}
 }

@@ -19,8 +19,8 @@ public class PowerController {
 	/** The powers available for the player to use **/
 	private Power[] powers;
 	
-	/** The currently active power **/
-	private Power activePower;
+	/** The index of the currently active power **/
+	private int activePowerIndex;
 	
 	/**
 	 * Creates a new power controller using a default melee power.
@@ -28,7 +28,7 @@ public class PowerController {
 	public PowerController() {
 		powers = new Power[1];
 		powers[0] = Power.createDefaultMeleePower();
-		activePower = powers[0];
+		activePowerIndex = 0;
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class PowerController {
 			powers = new Power[1];
 			powers[0] = Power.createDefaultMeleePower();
 		}
-		activePower = powers[0];
+		activePowerIndex = 0;
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class PowerController {
 	 */
 	public void selectPower(int index) {
 		if (isValidIndex(index) && powers[index].isUsable())
-			activePower = powers[index];
+			activePowerIndex = index;
 	}
 	
 	/**
@@ -83,8 +83,11 @@ public class PowerController {
 		return index >= 0 && index < powers.length;
 	}
 	
+	/** @return The index of the currently active power **/
+	public int getIndexOfActivePower() { return activePowerIndex; }
+	
 	/** @return The currently active power **/
-	public Power getActivePower() { return activePower; }
+	public Power getActivePower() { return powers[activePowerIndex]; }
 	
 	/** @return The number of powers **/
 	public int getNumberOfPowers() { return powers.length; }
