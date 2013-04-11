@@ -79,28 +79,42 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	 * Listens for a key press.
 	 */
 	public void keyPressed(KeyEvent key) {
-		inputHandler.act(key);
+		inputHandler.handle(key);
 	}
 
 	/**
 	 * Listens for a mouse click.
 	 */
 	public void mouseClicked(MouseEvent click) {
-		inputHandler.handle(click);
+		handle(click);
 	}
 	
 	/**
 	 * Listens for a mouse drag.
 	 */
 	public void mouseDragged(MouseEvent click) {
-		inputHandler.handle(click);
+		handle(click);
 	}
 	
 	/**
 	 * Listens for a mouse release.
 	 */
 	public void mouseReleased(MouseEvent click) {
-		inputHandler.handle(click);
+		handle(click);
+	}
+	
+	/**
+	 * Validates that the click we're handling is within the game window.
+	 * If it isn't, we dismiss the click.
+	 * @param click - The click to handle
+	 */
+	private void handle(MouseEvent click) {
+		int clickX = click.getX();
+		int clickY = click.getY();
+		
+		if (clickX >= 0 && clickX < WIDTH &&
+			clickY >= 0 && clickY < HEIGHT)
+			inputHandler.handle(click);
 	}
 	
 	/** Does nothing **/

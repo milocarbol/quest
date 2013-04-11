@@ -26,7 +26,7 @@ public class InputHandler {
 	 * Handles a key event.
 	 * @param key - The key event to handle.
 	 */
-	public void act(KeyEvent key) {
+	public void handle(KeyEvent key) {
 		
 	}
 	
