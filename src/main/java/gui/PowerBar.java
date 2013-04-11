@@ -25,8 +25,8 @@ public class PowerBar extends InfoComponent {
 	private static int emblemSize = 15;
 	
 	/** X- and y-offsets for the emblem **/
-	private static int	emblemOffsetHorizontal = 20,
-						emblemOffsetVertical = 10;
+	private static int	emblemOffsetHorizontal = 30,
+						emblemOffsetVertical = 5;
 	
 	/** Spacing between images **/
 	private static int imageSpacing = 10;
