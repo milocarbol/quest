@@ -1,6 +1,8 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -29,6 +31,9 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	
 	/** The input handler we're using **/
 	private final InputHandler inputHandler;
+	
+	/** The place to draw the targeter **/
+	private Point targeter = new Point();
 	
 	/** Width and height values **/
 	public static final int	WIDTH = 1000,
@@ -73,6 +78,9 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 					g.drawImage(actor.getImage(), row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
 				}
 			}
+		
+		g.setColor(Color.cyan);
+		g.drawRect(targeter.x*GRID_SPACE_SIZE, targeter.y*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE);
 	}
 	
 	/**
@@ -86,35 +94,54 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	 * Listens for a mouse click.
 	 */
 	public void mouseClicked(MouseEvent click) {
-		handle(click);
+		inputHandler.handle(click);
 	}
 	
 	/**
 	 * Listens for a mouse drag.
 	 */
 	public void mouseDragged(MouseEvent click) {
-		handle(click);
+		if(positionIsValid(click)) {
+			inputHandler.handle(click);
+			setTargeter(click);
+		}
 	}
 	
 	/**
 	 * Listens for a mouse release.
 	 */
 	public void mouseReleased(MouseEvent click) {
-		handle(click);
+		if(positionIsValid(click))
+			inputHandler.handle(click);
+	}
+	
+	/** When the mouse is moved, adjust the targeter **/
+	public void mouseMoved(MouseEvent move) {
+		if(positionIsValid(move))
+			setTargeter(move);
 	}
 	
 	/**
 	 * Validates that the click we're handling is within the game window.
 	 * If it isn't, we dismiss the click.
 	 * @param click - The click to handle
+	 * @return True if the click is within the game window, false otherwise
 	 */
-	private void handle(MouseEvent click) {
+	private boolean positionIsValid(MouseEvent click) {
 		int clickX = click.getX();
 		int clickY = click.getY();
 		
-		if (clickX >= 0 && clickX < WIDTH &&
-			clickY >= 0 && clickY < HEIGHT)
-			inputHandler.handle(click);
+		return	clickX >= 0 && clickX < WIDTH &&
+				clickY >= 0 && clickY < HEIGHT;
+	}
+	
+	/**
+	 * Sets the targeter to the position of the mouse pointer.
+	 * @param pixelPosition - The position of the mouse pointer.
+	 */
+	private void setTargeter(MouseEvent pixelPosition) {
+		targeter.x = Game.pixelToGridSpace(pixelPosition.getX());
+		targeter.y = Game.pixelToGridSpace(pixelPosition.getY());
 	}
 	
 	/** Does nothing **/
@@ -127,6 +154,4 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	public void mouseEntered(MouseEvent click) {}
 	/** Does nothing **/
 	public void mouseExited(MouseEvent click) {}
-	/** Does nothing **/
-	public void mouseMoved(MouseEvent arg0) {}
 }
