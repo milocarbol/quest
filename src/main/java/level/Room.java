@@ -1,10 +1,11 @@
 package level;
 
-import io.RoomLoader;
 
 import java.awt.Image;
 import java.awt.Point;
 import java.io.IOException;
+
+import loader.RoomLoader;
 
 import data.Files;
 

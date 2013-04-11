@@ -1,4 +1,4 @@
-package io;
+package loader;
 
 import java.awt.Image;
 import java.awt.Toolkit;

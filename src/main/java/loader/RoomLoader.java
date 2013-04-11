@@ -1,4 +1,4 @@
-package io;
+package loader;
 
 import gui.GameWindow;
 

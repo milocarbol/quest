@@ -1,11 +1,12 @@
 package gui;
 
-import io.ImageLoader;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
+
+import loader.ImageLoader;
 
 import control.PowerController;
 

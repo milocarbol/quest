@@ -1,6 +1,6 @@
 package entity.actor;
 
-import io.ImageLoader;
+import loader.ImageLoader;
 import control.Game;
 import control.PowerController;
 

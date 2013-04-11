@@ -1,8 +1,9 @@
 package entity.actor.power;
 
-import io.ImageLoader;
 
 import java.awt.Image;
+
+import loader.ImageLoader;
 
 import entity.actor.Actor;
 

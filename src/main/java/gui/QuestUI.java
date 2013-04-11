@@ -1,6 +1,5 @@
 package gui;
 
-import io.RoomLoader;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -12,6 +11,8 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
+
+import loader.RoomLoader;
 
 import control.Game;
 import control.InputHandler;

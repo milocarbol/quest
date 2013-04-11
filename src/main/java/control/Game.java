@@ -4,13 +4,13 @@ import entity.actor.Actor;
 import entity.actor.Monster;
 import entity.actor.Player;
 import gui.GameWindow;
-import io.RoomLoader;
 
 import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
 
 import level.Room;
+import loader.RoomLoader;
 
 /**
  * Data regarding dungeon layout, player position, etc.
