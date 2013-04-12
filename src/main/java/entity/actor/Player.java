@@ -1,8 +1,11 @@
 package entity.actor;
 
+import java.awt.Point;
+
 import loader.ImageLoader;
 import control.Game;
 import control.PowerController;
+import entity.actor.pathfinder.DirectPathfinder;
 
 
 /**
@@ -33,8 +36,8 @@ public class Player extends Actor {
 	 * @param y - The initial y-coordinate of the player.
 	 * @param game - The game this player is a part of.
 	 */
-	public Player(int x, int y, Game game) {
-		super(x, y, MAXIMUM_HEALTH, SPEED, new PowerController(true), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
+	public Player(Point startLocation, Game game) {
+		super(startLocation, MAXIMUM_HEALTH, SPEED, new DirectPathfinder(game, startLocation), new PowerController(true), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
 	}
 	
 	/**

@@ -1,16 +1,15 @@
 package control;
 
-import entity.actor.Actor;
-import entity.actor.Monster;
-import entity.actor.Player;
-import gui.GameWindow;
-
 import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
 
 import level.Room;
 import loader.RoomLoader;
+import entity.actor.Actor;
+import entity.actor.Monster;
+import entity.actor.Player;
+import gui.GameWindow;
 
 /**
  * Data regarding dungeon layout, player position, etc.
@@ -26,7 +25,7 @@ public class Game {
 	private List<Monster> monsters;
 	
 	/** Grid of actor positions. **/
-	private Actor[][] actors = new Actor[GameWindow.GRID_ROWS][GameWindow.GRID_COLUMNS];
+	private Actor[][] actors = new Actor[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
 	
 	/** The controller for the actors **/
 	private ActorController actorController;
@@ -45,7 +44,7 @@ public class Game {
 		this.room = new Room(layoutLoader, this);
 		
 		Point startLocation = room.getStartLocation();
-		this.player = new Player(startLocation.x, startLocation.y, this);
+		this.player = new Player(startLocation, this);
 		this.monsters = makeMonsters();
 		
 		this.actorController = new ActorController(this)
@@ -64,9 +63,9 @@ public class Game {
 	 */
 	private List<Monster> makeMonsters() {
 		monsters = new LinkedList<Monster>();
-		monsters.add(new Monster(GameWindow.GRID_ROWS - 2, GameWindow.GRID_COLUMNS - 2, this));
-		monsters.add(new Monster(GameWindow.GRID_ROWS - 2, 1, this));
-		monsters.add(new Monster(1, GameWindow.GRID_COLUMNS - 2, this));
+		monsters.add(new Monster(new Point(GameWindow.GRID_COLUMNS - 2, GameWindow.GRID_ROWS - 2), this));
+		monsters.add(new Monster(new Point(1, GameWindow.GRID_ROWS - 2), this));
+		monsters.add(new Monster(new Point(GameWindow.GRID_COLUMNS - 2, 1), this));
 		return monsters;
 	}
 	
@@ -83,43 +82,41 @@ public class Game {
 	
 	/**
 	 * Fetches the actor on a space.
-	 * @param x - The x-coordinate of the space to check
-	 * @param y - The y-coordinate of the space to check
+	 * @param column - The x-coordinate of the space to check
+	 * @param row - The y-coordinate of the space to check
 	 * @return the actor on the space, or null if there is no actor.
 	 */
-	public Actor getActor(int x, int y) {
-		return actors[x][y];
+	public Actor getActor(int column, int row) {
+		return actors[column][row];
 	}
-	
-	/** CONTROL **/
 	
 	/**
 	 * Tests if a space is available to move to.
-	 * @param x - The x-coordinate of the space.
-	 * @param y - The y-coordinate of the space.
+	 * @param column - The x-coordinate of the space.
+	 * @param row - The y-coordinate of the space.
 	 * @return True if the space is valid (i.e. not occupied and on the board), false otherwise.
 	 */
-	public boolean spaceIsFree(int x, int y) {
-		boolean isFree =	x >= 0 && y >= 0 &&
-							x < GameWindow.GRID_ROWS &&
-							y < GameWindow.GRID_COLUMNS &&
-							actors[x][y] == null &&
-							room.featureAt(x, y) == null;
+	public boolean spaceIsFree(int column, int row) {
+		boolean isFree =	column >= 0 && row >= 0 &&
+							column < GameWindow.GRID_COLUMNS &&
+							row < GameWindow.GRID_ROWS &&
+							actors[column][row] == null &&
+							room.featureAt(column, row) == null;
 		
 		return isFree;	
 	}
 	
 	/**
 	 * Checks if a space has an actor on it.
-	 * @param x - The x-coordinate of the space to check
-	 * @param y - The y-coordinate of the space to check
+	 * @param column - The x-coordinate of the space to check
+	 * @param row - The y-coordinate of the space to check
 	 * @return true if the space has an actor on it, false otherwise
 	 */
-	public boolean spaceHasActor(int x, int y) {
-		return	x >= 0 && y >= 0 &&
-				x < GameWindow.GRID_ROWS &&
-				y < GameWindow.GRID_COLUMNS &&
-				actors[x][y] != null;
+	public boolean spaceHasActor(int column, int row) {
+		return	column >= 0 && row >= 0 &&
+				column < GameWindow.GRID_ROWS &&
+				row < GameWindow.GRID_COLUMNS &&
+				actors[column][row] != null;
 	}
 	
 	/**
@@ -130,8 +127,11 @@ public class Game {
 	 * @return whether or not the source can attack the target
 	 */
 	public boolean canAttack(Actor target, Actor source, int range) {
-		return	Math.abs(target.getXPosition() - source.getXPosition()) <= range &&
-				Math.abs(target.getYPosition() - source.getYPosition()) <= range;
+		Point	targetLocation = target.getLocation(),
+				sourceLocation = source.getLocation();
+		
+		return	Math.abs(targetLocation.x - sourceLocation.x) <= range &&
+				Math.abs(targetLocation.y - sourceLocation.y) <= range;
 	}
 	
 	/**
@@ -155,18 +155,18 @@ public class Game {
 	 * If the space is empty, move there.
 	 * If the space is occupied by the player, do nothing.
 	 * If the space is occupied by a monster, attack it or move towards it.
-	 * @param x - The x-coordinate of the space
-	 * @param y - The y-coordinate of the space
+	 * @param column - The x-coordinate of the space
+	 * @param row - The y-coordinate of the space
 	 */
-	public void clickGridSpace(int x, int y) {
-		if (actors[x][y] == null) {
-			player.moveTo(x, y);
+	public void clickGridSpace(int column, int row) {
+		if (actors[column][row] == null) {
+			player.moveTo(column, row);
 			player.stopTargeting();
 		}
-		else if (actors[x][y] == player)
+		else if (actors[column][row] == player)
 			; // TODO Healing spells or something could go here
-		else if (actors[x][y] instanceof Monster)
-			player.target(actors[x][y]);
+		else if (actors[column][row] instanceof Monster)
+			player.target(actors[column][row]);
 	}
 	
 	/**
@@ -175,29 +175,33 @@ public class Game {
 	 * @param xPixelDestination - The x-pixel to head towards.
 	 * @param yPixelDestination - The y-pixel to head towards.
 	 */
-	public void movePlayer(int x, int y) {
-		player.moveTo(x, y);
+	public void movePlayer(int column, int row) {
+		player.moveTo(column, row);
 	}
 	
 	/**
 	 * Polls all actors and updates their positions in the actor grid according to their current positions.
 	 */
 	public void refreshActors() {		
-		for (int row = 0; row < actors.length; row++)
-			for (int column = 0; column < actors[row].length; column++)
-				if (row == player.getXPosition() && column == player.getYPosition())
-					actors[row][column] = player;
+		for (int row = 0; row < GameWindow.GRID_ROWS; row++)
+			for (int column = 0; column < GameWindow.GRID_COLUMNS; column++) {
+				Point playerLocation = player.getLocation();
+				if (row == playerLocation.y && column == playerLocation.x)
+					actors[column][row] = player;
 				else {
 					boolean isOccupiedByMonster = false;
 					for (Monster monster : monsters) {
-						if (row == monster.getXPosition() && column == monster.getYPosition()) {
-							actors[row][column] = monster;
+						Point monsterLocation = monster.getLocation();
+						
+						if (row == monsterLocation.y && column == monsterLocation.x) {
+							actors[column][row] = monster;
 							isOccupiedByMonster = true;
 						}
 					}
 					if (!isOccupiedByMonster)
-						actors[row][column] = null;
+						actors[column][row] = null;
 				}
+			}
 	}
 	
 	/**

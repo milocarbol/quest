@@ -44,8 +44,8 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	public static final int GRID_SPACE_SIZE = 20;
 	
 	/** The x- and y-dimensions of the grid, in grid spaces **/
-	public static final int GRID_ROWS = WIDTH / GRID_SPACE_SIZE,
-							GRID_COLUMNS = HEIGHT / GRID_SPACE_SIZE;
+	public static final int GRID_COLUMNS = WIDTH / GRID_SPACE_SIZE,
+							GRID_ROWS = HEIGHT / GRID_SPACE_SIZE;
 	
 	/**
 	 * Creates a new Screen and starts the painting timer.
@@ -68,18 +68,18 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 		Room layout = game.getMapLayout();
 		for (int row = 0; row < GRID_ROWS; row++)
 			for (int column = 0; column < GRID_COLUMNS; column++) {
-				g.drawImage(layout.tileAt(row, column), row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
-				Image feature = layout.featureImageAt(row, column);
+				g.drawImage(layout.tileAt(column, row), column*GRID_SPACE_SIZE, row*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
+				Image feature = layout.featureImageAt(column, row);
 				if (feature != null)
-					g.drawImage(feature, row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
+					g.drawImage(feature, column*GRID_SPACE_SIZE, row*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
 			}
 		
 		Actor[][] actors = game.getActors();
 		for (int row = 0; row < GRID_ROWS; row++)
 			for (int column = 0; column < GRID_COLUMNS; column++) {
-				Actor actor = actors[row][column];
+				Actor actor = actors[column][row];
 				if (actor != null) {
-					g.drawImage(actor.getImage(), row*GRID_SPACE_SIZE, column*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
+					g.drawImage(actor.getImage(), column*GRID_SPACE_SIZE, row*GRID_SPACE_SIZE, GRID_SPACE_SIZE, GRID_SPACE_SIZE, this);
 				}
 			}
 		
@@ -132,11 +132,11 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
 	 * @return True if the click is within the game window, false otherwise
 	 */
 	private boolean positionIsValid(MouseEvent click) {
-		int clickX = click.getX();
-		int clickY = click.getY();
+		int column = click.getX();
+		int row = click.getY();
 		
-		return	clickX >= 0 && clickX < WIDTH &&
-				clickY >= 0 && clickY < HEIGHT;
+		return	column >= 0 && column < WIDTH &&
+				row >= 0 && row < HEIGHT;
 	}
 	
 	/**

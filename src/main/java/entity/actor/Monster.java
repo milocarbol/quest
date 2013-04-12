@@ -1,8 +1,11 @@
 package entity.actor;
 
+import java.awt.Point;
+
 import loader.ImageLoader;
 import control.Game;
 import control.PowerController;
+import entity.actor.pathfinder.DirectPathfinder;
 
 
 /**
@@ -33,8 +36,8 @@ public class Monster extends Actor {
 	 * @param y - The initial y-coordinate.
 	 * @param game - The game this monster is a part of.
 	 */
-	public Monster(int x, int y, Game game) {
-		super(x, y, DEFAULT_HEALTH, DEFAULT_MONSTER_SPEED, new PowerController(), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
+	public Monster(Point startLocation, Game game) {
+		super(startLocation, DEFAULT_HEALTH, DEFAULT_MONSTER_SPEED, new DirectPathfinder(game, startLocation), new PowerController(), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
 	}
 	
 	/**

@@ -35,9 +35,9 @@ public class InputHandler {
 	 * @param click - The click event to handle.
 	 */
 	public void handle(MouseEvent click) {
-		int x = Game.pixelToGridSpace(click.getX());
-		int y = Game.pixelToGridSpace(click.getY());
+		int column = Game.pixelToGridSpace(click.getX());
+		int row = Game.pixelToGridSpace(click.getY());
 		
-		game.clickGridSpace(x, y);
+		game.clickGridSpace(column, row);
 	}
 }

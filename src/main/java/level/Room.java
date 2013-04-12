@@ -51,42 +51,42 @@ public class Room {
 	
 	/**
 	 * Gets the tile to draw at a certain location
-	 * @param row - The x-coordinate of the desired tile
-	 * @param column - The y-coordinate of the desired tile
+	 * @param column - The x-coordinate of the desired tile
+	 * @param row - The y-coordinate of the desired tile
 	 * @return The tile at a given location, or null if the coordinates are invalid.
 	 */
-	public Image tileAt(int row, int column) {
-		if (tileIsValid(row, column))
-			return tiles[row][column];
+	public Image tileAt(int column, int row) {
+		if (tileIsValid(column, row))
+			return tiles[column][row];
 		return null;
 	}
 	
 	/**
 	 * Gets the image for a feature to draw at a certain location
-	 * @param row - The x-coordinate of the desired feature
-	 * @param column - The y-coordinate of the desired feature
+	 * @param column - The x-coordinate of the desired feature
+	 * @param row - The y-coordinate of the desired feature
 	 * @return The image for the feature at a given location, or null if there isn't one.
 	 */
-	public Image featureImageAt(int row, int column) {
-		if (tileIsValid(row, column) && features[row][column] != null)
-			return features[row][column].getImage();
+	public Image featureImageAt(int column, int row) {
+		if (tileIsValid(column, row) && features[column][row] != null)
+			return features[column][row].getImage();
 		return null;
 	}
 	
 	/**
 	 * Gets the feature at a certain location
-	 * @param row - The x-coordinate of the desired featre
-	 * @param column - The y-coordinate of the desired feature
+	 * @param column - The x-coordinate of the desired featre
+	 * @param row - The y-coordinate of the desired feature
 	 * @return The feature at a given location, or null if the coordinates are invalid.
 	 */
-	public Feature featureAt(int row, int column) {
-		if (tileIsValid(row, column))
-			return features[row][column];
+	public Feature featureAt(int column, int row) {
+		if (tileIsValid(column, row))
+			return features[column][row];
 		return null;
 	}
 	
-	private boolean tileIsValid(int row, int column) {
-		return	row >= 0 && row < tiles.length &&
-				column >= 0 && column < tiles[0].length;
+	private boolean tileIsValid(int column, int row) {
+		return	column >= 0 && column < tiles.length &&
+				row >= 0 && row < tiles[0].length;
 	}
 }

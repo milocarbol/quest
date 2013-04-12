@@ -44,8 +44,8 @@ public class RoomLoader {
 	 * @throws IOException if the file can't be found or the layout doesn't match the standard dimensions.
 	 */
 	public RoomData loadRoom(String roomFile, Game game) throws IOException {
-		Image[][] tiles = new Image[GameWindow.GRID_ROWS][GameWindow.GRID_COLUMNS];
-		Feature[][] features = new Feature[GameWindow.GRID_ROWS][GameWindow.GRID_COLUMNS];
+		Image[][] tiles = new Image[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
+		Feature[][] features = new Feature[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
 		
 		File file = new File(roomFile);
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -68,12 +68,12 @@ public class RoomLoader {
 					switch(section) {
 					case 0:
 						for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
-							tiles[row][column] = ImageLoader.loadImage(dataStrings[column]);
+							tiles[column][row] = ImageLoader.loadImage(dataStrings[column]);
 						break;
 					case 1:
 						for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
 							if (!dataStrings[column].equals(null_tile))
-								features[row][column] = new Feature(row, column, ImageLoader.loadImage(dataStrings[column]), null, game);
+								features[column][row] = new Feature(column, row, ImageLoader.loadImage(dataStrings[column]), null, game);
 						break;
 					}
 					row++;
