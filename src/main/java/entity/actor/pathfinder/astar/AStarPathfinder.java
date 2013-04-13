@@ -68,8 +68,8 @@ public class AStarPathfinder implements IPathfinder {
 				
 				for (AStarNode neighbour : neighbours) {
 					if (closedNodes.contains(neighbour) ||
-						game.spaceHasFeature(neighbour.getGridSpace().x, neighbour.getGridSpace().y) ||
-						(current.getGridSpace().equals(currentLocation) && game.spaceHasActor(neighbour.getGridSpace().x, neighbour.getGridSpace().y))) {
+						game.spaceHasFeature(neighbour.getGridSpace()) ||
+						(current.getGridSpace().equals(currentLocation) && game.spaceHasActor(neighbour.getGridSpace()))) {
 						// Do nothing
 					}
 					else if (!openNodes.contains(neighbour)) {

@@ -82,54 +82,61 @@ public class Game {
 	
 	/**
 	 * Fetches the actor on a space.
-	 * @param column - The x-coordinate of the space to check
-	 * @param row - The y-coordinate of the space to check
+	 * @param location - The coordinates of the space to check
 	 * @return the actor on the space, or null if there is no actor.
 	 */
-	public Actor getActor(int column, int row) {
-		return actors[column][row];
+	public Actor getActor(Point location) {
+		return actors[location.x][location.y];
 	}
 	
 	/**
 	 * Tests if a space is available to move to.
-	 * @param column - The x-coordinate of the space.
-	 * @param row - The y-coordinate of the space.
+	 * @param location - The coordinates of the space.
 	 * @return True if the space is valid (i.e. not occupied and on the board), false otherwise.
 	 */
-	public boolean spaceIsFree(int column, int row) {
-		boolean isFree =	column >= 0 && row >= 0 &&
-							column < GameWindow.GRID_COLUMNS &&
-							row < GameWindow.GRID_ROWS &&
-							actors[column][row] == null &&
-							room.featureAt(column, row) == null;
-		
-		return isFree;	
+	public boolean spaceIsFree(Point location) {
+		return	spaceIsWalkable(location) &&
+				actors[location.x][location.y] == null;
 	}
 	
 	/**
 	 * Checks if a space has an actor on it.
-	 * @param column - The x-coordinate of the space to check
-	 * @param row - The y-coordinate of the space to check
+	 * @param location - The coordinates of the space to check
 	 * @return true if the space has an actor on it, false otherwise
 	 */
-	public boolean spaceHasActor(int column, int row) {
-		return	column >= 0 && row >= 0 &&
-				column < GameWindow.GRID_COLUMNS &&
-				row < GameWindow.GRID_ROWS &&
-				actors[column][row] != null;
+	public boolean spaceHasActor(Point location) {
+		return	spaceIsValid(location) &&
+				actors[location.x][location.y] != null;
 	}
 	
 	/**
 	 * Checks if a space has a feature on it.
-	 * @param column - The x-coordinate of the space to check
-	 * @param row - The y-coordinate of the space to check
+	 * @param location - The coordinates of the space to check
 	 * @return true if the space has a feature on it, false otherwise
 	 */
-	public boolean spaceHasFeature(int column, int row) {
-		return	column >= 0 && row >= 0 &&
-				column < GameWindow.GRID_COLUMNS &&
-				row < GameWindow.GRID_ROWS &&
-				room.featureAt(column, row) != null;
+	public boolean spaceHasFeature(Point location) {
+		return	spaceIsValid(location) &&
+				room.featureAt(location.x, location.y) != null;
+	}
+	
+	/**
+	 * Checks if a grid space is walkable for actors.
+	 * @param location - The coordinates of the space to check
+	 * @return True if actors are allowed on the space, false otherwise.
+	 */
+	public boolean spaceIsWalkable(Point location) {
+		return	spaceIsValid(location) &&
+				room.featureAt(location.x, location.y) == null;
+	}
+	
+	/**
+	 * Validates a grid space.
+	 * @param location - The coordinates of the space to check
+	 * @return True if the space is within the confines of the game board, false otherwise.
+	 */
+	public boolean spaceIsValid(Point location) {
+		return	location.x >= 0 && location.x < GameWindow.GRID_COLUMNS &&
+				location.y >= 0 && location.y < GameWindow.GRID_ROWS;
 	}
 	
 	/**

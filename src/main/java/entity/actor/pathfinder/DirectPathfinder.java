@@ -55,7 +55,7 @@ public class DirectPathfinder implements IPathfinder {
 				int potentialXPosition = currentLocation.x + computeDirection(currentLocation.x, targetLocation.x);
 				
 				if (indexInChunk < chunkSizes[chunkIndex]) {
-					if (game.spaceIsFree(potentialXPosition, currentLocation.y)) {
+					if (game.spaceIsFree(new Point(potentialXPosition, currentLocation.y))) {
 						next.x = potentialXPosition;
 						indexInChunk++;
 					}
@@ -63,7 +63,7 @@ public class DirectPathfinder implements IPathfinder {
 				else {
 					int potentialYPosition = currentLocation.y + computeDirection(currentLocation.y, targetLocation.y);
 					
-					if (game.spaceIsFree(potentialXPosition, potentialYPosition)) {
+					if (game.spaceIsFree(new Point(potentialXPosition, potentialYPosition))) {
 						next.x = potentialXPosition;
 						next.y = potentialYPosition;
 						chunkIndex++;
@@ -75,7 +75,7 @@ public class DirectPathfinder implements IPathfinder {
 				int potentialYPosition = currentLocation.y + computeDirection(currentLocation.y, targetLocation.y);
 				
 				if (indexInChunk < chunkSizes[chunkIndex]) {
-					if (game.spaceIsFree(currentLocation.x, potentialYPosition)) {
+					if (game.spaceIsFree(new Point(currentLocation.x, potentialYPosition))) {
 						next.y = potentialYPosition;
 						indexInChunk++;
 					}
@@ -83,7 +83,7 @@ public class DirectPathfinder implements IPathfinder {
 				else {
 					int potentialXPosition = currentLocation.x + computeDirection(currentLocation.x, targetLocation.x);
 					
-					if (game.spaceIsFree(potentialXPosition, potentialYPosition)) {
+					if (game.spaceIsFree(new Point(potentialXPosition, potentialYPosition))) {
 						next.x = potentialXPosition;
 						next.y = potentialYPosition;
 						chunkIndex++;
