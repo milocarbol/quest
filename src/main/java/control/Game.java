@@ -1,7 +1,6 @@
 package control;
 
 import java.awt.Point;
-import java.util.LinkedList;
 import java.util.List;
 
 import level.Room;
@@ -45,7 +44,7 @@ public class Game {
 		
 		Point startLocation = room.getStartLocation();
 		this.player = new Player(startLocation, this);
-		this.monsters = makeMonsters();
+		this.monsters = room.getMonsters();
 		
 		this.actorController = new ActorController(this)
 									.withPlayer(player)
@@ -54,19 +53,6 @@ public class Game {
 		this.player.begin();
 		for (Monster monster : monsters)
 			monster.begin();
-	}
-	
-	/**
-	 * Builds the initial list of monsters in the room.
-	 * TODO This is only for development/testing purposes.
-	 * @return the list of test monsters.
-	 */
-	private List<Monster> makeMonsters() {
-		monsters = new LinkedList<Monster>();
-		monsters.add(new Monster(new Point(GameWindow.GRID_COLUMNS - 2, GameWindow.GRID_ROWS - 2), this));
-		monsters.add(new Monster(new Point(1, GameWindow.GRID_ROWS - 2), this));
-		monsters.add(new Monster(new Point(GameWindow.GRID_COLUMNS - 2, 1), this));
-		return monsters;
 	}
 	
 	/** ACCESSORS **/

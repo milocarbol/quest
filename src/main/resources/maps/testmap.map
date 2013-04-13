@@ -26,7 +26,7 @@ floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_st
 floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone
 floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone
 floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone:floor_stone
---
+***
 wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall
 wall:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:wall
 wall:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:wall
@@ -55,3 +55,14 @@ wall:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:
 wall:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:wall
 wall:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:null:wall
 wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall:wall
+***
+1:1
+***
+48:26:20:4:default_monster:default_monster_dead
+default:default_power_melee:1:0:10
+---
+48:1:20:4:default_monster:default_monster_dead
+default:default_power_melee:1:0:10
+---
+1:26:20:4:default_monster:default_monster_dead
+default:default_power_melee:1:0:10
