@@ -1,5 +1,6 @@
 package loader;
 
+import data.Images;
 import entity.Feature;
 import gui.GameWindow;
 
@@ -27,14 +28,6 @@ public class RoomLoader {
 	
 	/** The deliminator for sections in the file **/
 	private static final String sectionDeliminator = "--";
-	
-	/** The file names for various images **/
-	private static final String wall_00 = "wall_00",
-								floor_00 = "floor_00",
-								column_00 = "column_00",
-								null_tile = "null_xx";
-	
-	
 	
 	/**
 	 * Creates a map from a file.
@@ -72,7 +65,7 @@ public class RoomLoader {
 						break;
 					case 1:
 						for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
-							if (!dataStrings[column].equals(null_tile))
+							if (!dataStrings[column].equals(Images.NULL_TILE))
 								features[column][row] = new Feature(column, row, ImageLoader.loadImage(dataStrings[column]), null, game);
 						break;
 					}
@@ -95,7 +88,7 @@ public class RoomLoader {
 		
 		for (int row = 0; row < GameWindow.GRID_ROWS; row++) {
 			for (int column = 0; column < GameWindow.GRID_COLUMNS; column++) {
-				outWriter.print(floor_00);
+				outWriter.print(Images.FLOOR_STONE);
 				if (column < GameWindow.GRID_COLUMNS - 1)
 					outWriter.print(tileDeliminator);
 			}
@@ -111,11 +104,11 @@ public class RoomLoader {
 						column == 0 ||
 						column == GameWindow.GRID_COLUMNS - 1 ||
 						(row > 5 && row < GameWindow.GRID_ROWS - 5 && column == GameWindow.GRID_COLUMNS / 2))
-					outWriter.print(wall_00);
+					outWriter.print(Images.WALL);
 				else if (row % 7 == 0 && column % 9 == 0)
-					outWriter.print(column_00);
+					outWriter.print(Images.COLUMN);
 				else
-					outWriter.print(null_tile);
+					outWriter.print(Images.NULL_TILE);
 				if (column < GameWindow.GRID_COLUMNS - 1)
 					outWriter.print(tileDeliminator);
 			}

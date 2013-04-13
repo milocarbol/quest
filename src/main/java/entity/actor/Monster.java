@@ -5,6 +5,7 @@ import java.awt.Point;
 import loader.ImageLoader;
 import control.Game;
 import control.PowerController;
+import data.Images;
 import entity.actor.pathfinder.astar.AStarPathfinder;
 
 
@@ -24,12 +25,6 @@ public class Monster extends Actor {
 	/** The monster's default damage **/
 	public static final int DEFAULT_DAMAGE = 10;
 	
-	/** The image file to draw when a monster is alive **/
-	public static final String DEFAULT_ALIVE_IMAGE = "default_monster";
-	
-	/** The image file to draw when a monster is dead **/
-	public static final String DEFAULT_DEAD_IMAGE = "default_monster_dead";
-	
 	/**
 	 * Creates a new monster.
 	 * @param x - The initial x-coordinate.
@@ -37,7 +32,7 @@ public class Monster extends Actor {
 	 * @param game - The game this monster is a part of.
 	 */
 	public Monster(Point startLocation, Game game) {
-		super(startLocation, DEFAULT_HEALTH, DEFAULT_MONSTER_SPEED, new AStarPathfinder(game, startLocation), new PowerController(), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
+		super(startLocation, DEFAULT_HEALTH, DEFAULT_MONSTER_SPEED, new AStarPathfinder(game, startLocation), new PowerController(), ImageLoader.loadImage(Images.MONSTER_DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(Images.MONSTER_DEFAULT_DEAD_IMAGE), game);
 	}
 	
 	/**

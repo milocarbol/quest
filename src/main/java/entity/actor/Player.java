@@ -5,6 +5,7 @@ import java.awt.Point;
 import loader.ImageLoader;
 import control.Game;
 import control.PowerController;
+import data.Images;
 import entity.actor.pathfinder.DirectPathfinder;
 
 
@@ -24,12 +25,6 @@ public class Player extends Actor {
 	/** Player's default damage for testing **/
 	public static final int DEFAULT_DAMAGE = 20;
 	
-	/** The image file to draw while the player is alive **/
-	public static final String DEFAULT_ALIVE_IMAGE = "default_player";
-	
-	/** The image file to draw while the player is dead **/
-	public static final String DEFAULT_DEAD_IMAGE = "default_player_dead";
-	
 	/**
 	 * Creates a new player.
 	 * @param x - The initial x-coordinate of the player.
@@ -37,7 +32,7 @@ public class Player extends Actor {
 	 * @param game - The game this player is a part of.
 	 */
 	public Player(Point startLocation, Game game) {
-		super(startLocation, MAXIMUM_HEALTH, SPEED, new DirectPathfinder(game, startLocation), new PowerController(true), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
+		super(startLocation, MAXIMUM_HEALTH, SPEED, new DirectPathfinder(game, startLocation), new PowerController(true), ImageLoader.loadImage(Images.PLAYER_DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(Images.PLAYER_DEFAULT_DEAD_IMAGE), game);
 	}
 	
 	/**
