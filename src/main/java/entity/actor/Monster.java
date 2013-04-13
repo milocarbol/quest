@@ -5,7 +5,7 @@ import java.awt.Point;
 import loader.ImageLoader;
 import control.Game;
 import control.PowerController;
-import entity.actor.pathfinder.DirectPathfinder;
+import entity.actor.pathfinder.astar.AStarPathfinder;
 
 
 /**
@@ -37,7 +37,7 @@ public class Monster extends Actor {
 	 * @param game - The game this monster is a part of.
 	 */
 	public Monster(Point startLocation, Game game) {
-		super(startLocation, DEFAULT_HEALTH, DEFAULT_MONSTER_SPEED, new DirectPathfinder(game, startLocation), new PowerController(), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
+		super(startLocation, DEFAULT_HEALTH, DEFAULT_MONSTER_SPEED, new AStarPathfinder(game, startLocation), new PowerController(), ImageLoader.loadImage(DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(DEFAULT_DEAD_IMAGE), game);
 	}
 	
 	/**

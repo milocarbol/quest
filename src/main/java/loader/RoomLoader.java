@@ -109,7 +109,8 @@ public class RoomLoader {
 				if (row == 0 ||
 						row == GameWindow.GRID_ROWS - 1 ||
 						column == 0 ||
-						column == GameWindow.GRID_COLUMNS - 1)
+						column == GameWindow.GRID_COLUMNS - 1 ||
+						(row > 5 && row < GameWindow.GRID_ROWS - 5 && column == GameWindow.GRID_COLUMNS / 2))
 					outWriter.print(wall_00);
 				else if (row % 7 == 0 && column % 9 == 0)
 					outWriter.print(column_00);

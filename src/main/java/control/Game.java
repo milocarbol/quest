@@ -114,9 +114,22 @@ public class Game {
 	 */
 	public boolean spaceHasActor(int column, int row) {
 		return	column >= 0 && row >= 0 &&
-				column < GameWindow.GRID_ROWS &&
-				row < GameWindow.GRID_COLUMNS &&
+				column < GameWindow.GRID_COLUMNS &&
+				row < GameWindow.GRID_ROWS &&
 				actors[column][row] != null;
+	}
+	
+	/**
+	 * Checks if a space has a feature on it.
+	 * @param column - The x-coordinate of the space to check
+	 * @param row - The y-coordinate of the space to check
+	 * @return true if the space has a feature on it, false otherwise
+	 */
+	public boolean spaceHasFeature(int column, int row) {
+		return	column >= 0 && row >= 0 &&
+				column < GameWindow.GRID_COLUMNS &&
+				row < GameWindow.GRID_ROWS &&
+				room.featureAt(column, row) != null;
 	}
 	
 	/**
