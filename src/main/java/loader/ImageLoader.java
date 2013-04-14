@@ -32,11 +32,22 @@ public class ImageLoader {
 	 * @return - The loaded image.
 	 */
 	public static Image loadImage(String type) {
-		if (Images.TYPE_COUNTS.get(type) == null || type.matches(specificImageRegex)) {
+		if (type.matches(specificImageRegex)) {
 			return fetchImage(type);
 		}
 		else {
-			int specific = (int)(Math.random()*Images.TYPE_COUNTS.get(type));
+			String baseType = type;
+			
+			if (type.matches(".+_[ilrtb]{1,3}")) {	
+				String[] typeParts = type.split("_");
+				baseType = "";
+				for (int i = 0; i < typeParts.length - 1; i++) {
+					if (i > 0)
+						baseType += "_";
+					baseType += typeParts[i];
+				}
+			}
+			int specific = (int)(Math.random()*Images.TYPE_COUNTS.get(baseType));
 			String specificString;
 			if (specific < 10)
 				specificString = "0" + specific;

@@ -43,7 +43,7 @@ public class RoomLoader {
 	 */
 	public RoomData loadRoom(String roomFile, Game game) throws IOException {
 		Image[][] tiles = new Image[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
-		Feature[][] features = new Feature[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
+		Feature[][] features;
 		Player player;
 		List<Monster> monsters = new LinkedList<Monster>();
 		
@@ -55,6 +55,7 @@ public class RoomLoader {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		
 		Point playerStartLocation = null;
+		String[][] featureGrid = new String[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
 		
 		int section = 0;
 		int row = 0;
@@ -83,8 +84,7 @@ public class RoomLoader {
 						throw new IOException("Layout dimensions are incorrect for file " + roomFile);
 					}
 					for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
-						if (!featureStrings[column].equals(Images.NULL_TILE))
-							features[column][row] = new Feature(column, row, ImageLoader.loadImage(featureStrings[column]), null, game);
+						featureGrid[column][row] = featureStrings[column];
 					row++;
 				} while ((line = reader.readLine()) != null && !line.equals(sectionDeliminator));
 				section++;
@@ -106,12 +106,264 @@ public class RoomLoader {
 		reader.close();
 		
 		player = playerLoader.loadPlayer(playerStartLocation);
+		features = createFeatures(featureGrid, game);
 		
 		monsterLoader.release();
 		powerLoader.release();
 		playerLoader.release();
 		
 		return new RoomData(tiles, features, player, monsters);
+	}
+	
+	/**
+	 * Creates the true feature grid from a string grid.
+	 * @param featureGrid - The string grid
+	 * @param game - The game we're interacting with
+	 * @return The true grid of Feature objects
+	 */
+	private Feature[][] createFeatures(String[][] featureGrid, Game game) {
+		Feature[][] features = new Feature[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
+		for (int row = 0; row < GameWindow.GRID_ROWS; row++)
+			for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
+				if (!featureGrid[column][row].equals(Images.NULL_TILE))
+					if (Images.EDGED.contains(featureGrid[column][row])) {
+						features[column][row] = new Feature(column, row, ImageLoader.loadImage(featureGrid[column][row] + getPositionString(featureGrid[column][row], column, row, featureGrid)), null, game);
+					}
+					else
+						features[column][row] = new Feature(column, row, ImageLoader.loadImage(featureGrid[column][row]), null, game);
+		return features;
+						
+	}
+	
+	/**
+	 * Returns the correct suffix for edged features.
+	 * @param featureType - The feature base type (i.e. "water")
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return The correct suffix for edged features
+	 */
+	private String getPositionString(String featureType, int column, int row, String[][] featureGrid) {
+		if (isTopLeft(featureType, column, row, featureGrid))
+			return "_tl";
+		else if (isTopEdge(featureType, column, row, featureGrid))
+			return "_t";
+		else if (isTopRight(featureType, column, row, featureGrid))
+			return "_tr";
+		else if (isRightEdge(featureType, column, row, featureGrid))
+			return "_r";
+		else if (isBottomRight(featureType, column, row, featureGrid))
+			return "_br";
+		else if (isBottomEdge(featureType, column, row, featureGrid))
+			return "_b";
+		else if (isBottomLeft(featureType, column, row, featureGrid))
+			return "_bl";
+		else if (isLeftEdge(featureType, column, row, featureGrid))
+			return "_l";
+		else if (isInverseTopLeft(featureType, column, row, featureGrid))
+			return "_itl";
+		else if (isInverseTopRight(featureType, column, row, featureGrid))
+			return "_itr";
+		else if (isInverseBottomRight(featureType, column, row, featureGrid))
+			return "_ibr";
+		else if (isInverseBottomLeft(featureType, column, row, featureGrid))
+			return "_ibl";
+		else
+			return "";
+	}
+	
+	/**
+	 * Checks if a feature is the top left corner of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is the top left corner of the set
+	 */
+	private boolean isTopLeft(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, false, true, true, false);
+	}
+	
+	/**
+	 * Checks if a feature is a top edge of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is a top edge of the set
+	 */
+	private boolean isTopEdge(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, false, true, true, true);
+	}
+	
+	/**
+	 * Checks if a feature is the top right corner of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is the top right corner of the set
+	 */
+	private boolean isTopRight(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, false, false, true, true);
+	}
+	
+	/**
+	 * Checks if a feature is a right edge of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is a right edge of the set
+	 */
+	private boolean isRightEdge(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, true, false, true, true);
+	}
+	
+	/**
+	 * Checks if a feature is the bottom right corner of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is the bottom right corner of the set
+	 */
+	private boolean isBottomRight(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, true, false, false, true);
+	}
+	
+	/**
+	 * Checks if a feature is a bottom edge of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is a bottom edge of the set
+	 */
+	private boolean isBottomEdge(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, true, true, false, true);
+	}
+
+	/**
+	 * Checks if a feature is the bottom left corner of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is the bottom left corner of the set
+	 */
+	private boolean isBottomLeft(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, true, true, false, false);
+	}
+
+	/**
+	 * Checks if a feature is a left edge of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is a left edge of the set
+	 */
+	private boolean isLeftEdge(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, true, true, true, false);
+	}
+	
+	/**
+	 * Checks if a feature is an inverse top left corner of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is an inverse top left corner of the set
+	 */
+	private boolean isInverseTopLeft(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, true, true, true, true, false, true, true, true);
+	}
+	
+	/**
+	 * Checks if a feature is an inverse top right corner of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is an inverse top right corner of the set
+	 */
+	private boolean isInverseTopRight(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, true, true, true, true, true, true, false, true);
+	}
+	
+	/**
+	 * Checks if a feature is an inverse bottom left corner of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is an inverse bottom left corner of the set
+	 */
+	private boolean isInverseBottomLeft(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, true, true, false, true, true, true, true, true);
+	}
+	
+	/**
+	 * Checks if a feature is an inverse bottom right corner of a set of those features.
+	 * @param featureType - The feature type string
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The string grid of feature types
+	 * @return True if the feature is an inverse bottom right corner of the set
+	 */
+	private boolean isInverseBottomRight(String featureType, int column, int row, String[][] featureGrid) {
+		return isPosition(featureType, column, row, featureGrid, false, true, true, true, true, true, true, true);
+	}
+	
+	/**
+	 * Checks if a feature's surroundings matches the parameters.
+	 * @param featureType - The feature's type
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The grid of feature type strings
+	 * @param top - If the feature above should match this feature type
+	 * @param right - If the feature to the right should match this feature type
+	 * @param bottom - If the feature below should match this feature type
+	 * @param left - If the feature to the left should match this feature type
+	 * @return True if the feature's surroundings match the parameters
+	 */
+	private boolean isPosition(	String featureType, int column, int row, String[][] featureGrid,
+								boolean top, boolean right, boolean bottom, boolean left) {
+		return	featureGrid[column][row - 1].equals(featureType) == top &&
+				featureGrid[column + 1][row].equals(featureType) == right &&
+				featureGrid[column][row + 1].equals(featureType) == bottom &&
+				featureGrid[column - 1][row].equals(featureType) == left;
+	}
+	
+	/**
+	 * Checks if a feature's surroundings matches the parameters.
+	 * @param featureType - The feature's type
+	 * @param column - The x-coordinate of the feature
+	 * @param row - The y-coordinate of the feature
+	 * @param featureGrid - The grid of feature type strings
+	 * @param topLeft - If the feature above and to the left should match this feature type
+	 * @param top - If the feature above should match this feature type
+	 * @param topRight - If the feature above and to the right should match this feature type
+	 * @param right - If the feature to the right should match this feature type
+	 * @param bottomRight - If the feature below and to the right should match this feature type
+	 * @param bottom - If the feature below should match this feature type
+	 * @param bottomLeft - If the feature below and to the left should match this feature type
+	 * @param left - If the feature to the left should match this feature type
+	 * @return True if the feature's surroundings match the parameters
+	 */
+	private boolean isPosition(	String featureType, int column, int row, String[][] featureGrid,
+						boolean topLeft, boolean top, boolean topRight,
+						boolean right, boolean bottomRight, boolean bottom,
+						boolean bottomLeft, boolean left) {
+		return	featureGrid[column - 1][row - 1].equals(featureType) == topLeft &&
+				featureGrid[column][row - 1].equals(featureType) == top &&
+				featureGrid[column + 1][row - 1].equals(featureType) == topRight &&
+				featureGrid[column + 1][row].equals(featureType) == right &&
+				featureGrid[column + 1][row + 1].equals(featureType) == bottomRight &&
+				featureGrid[column][row + 1].equals(featureType) == bottom &&
+				featureGrid[column - 1][row + 1].equals(featureType) == bottomLeft &&
+				featureGrid[column - 1][row].equals(featureType) == left;
 	}
 	
 	/**
@@ -143,6 +395,8 @@ public class RoomLoader {
 					outWriter.print(Images.WALL);
 				else if (row % 7 == 0 && column % 9 == 0)
 					outWriter.print(Images.COLUMN);
+				else if (row > 4 && row < 10 && column > 28 && column < 39)
+					outWriter.print(Images.WATER);
 				else
 					outWriter.print(Images.NULL_TILE);
 				if (column < GameWindow.GRID_COLUMNS - 1)
