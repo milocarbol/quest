@@ -10,6 +10,8 @@ import gui.GameWindow;
 
 /**
  * Implements the A* algorithm to find the most efficient path.
+ * TODO - Add a new class AStarMap which holds all the nodes with their neighbours
+ * 	so that we don't have to rebuild it every time.
  * @author Milo Carbol
  * @since 12 April 2013
  */
