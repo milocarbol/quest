@@ -107,6 +107,10 @@ public class RoomLoader {
 		
 		player = playerLoader.loadPlayer(playerStartLocation);
 		
+		monsterLoader.release();
+		powerLoader.release();
+		playerLoader.release();
+		
 		return new RoomData(tiles, features, player, monsters);
 	}
 	
