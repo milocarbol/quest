@@ -387,15 +387,11 @@ public class RoomLoader {
 		
 		for (int row = 0; row < GameWindow.GRID_ROWS; row++) {
 			for (int column = 0; column < GameWindow.GRID_COLUMNS; column++) {
-				if (row == 0 ||
-						row == GameWindow.GRID_ROWS - 1 ||
-						column == 0 ||
-						column == GameWindow.GRID_COLUMNS - 1 ||
-						(row > 5 && row < GameWindow.GRID_ROWS - 5 && column == GameWindow.GRID_COLUMNS / 2))
+				if (shouldBeWall(column, row))
 					outWriter.print(Images.WALL);
-				else if (row % 7 == 0 && column % 9 == 0)
+				else if (shouldBeColumn(column, row))
 					outWriter.print(Images.COLUMN);
-				else if (row > 4 && row < 10 && column > 28 && column < 39)
+				else if (shouldBeWater(column, row))
 					outWriter.print(Images.WATER);
 				else
 					outWriter.print(Images.NULL_TILE);
@@ -417,6 +413,45 @@ public class RoomLoader {
 		printTestMonster(1, GameWindow.GRID_ROWS - 2, outWriter);
 		
 		outWriter.close();
+	}
+	
+	/**
+	 * Defines where to put walls on the test map
+	 * @param column - The column to check
+	 * @param row - The row to check
+	 * @return True if there should be walls here, false otherwise
+	 */
+	private static boolean shouldBeWall(int column, int row) {
+		return	row == 0 ||
+				row == GameWindow.GRID_ROWS - 1 ||
+				column == 0 ||
+				column == GameWindow.GRID_COLUMNS - 1 ||
+				(row > 5 && row < GameWindow.GRID_ROWS - 5 && column == GameWindow.GRID_COLUMNS / 2);
+	}
+	
+	/**
+	 * Defines where to put columns on the test map
+	 * @param column - The column to check
+	 * @param row - The row to check
+	 * @return True if there should be a column here, false otherwise
+	 */
+	private static boolean shouldBeColumn(int column, int row) {
+		return row % 7 == 0 && column % 9 == 0;
+	}
+	
+	/**
+	 * Defines where to put a lake on the test map
+	 * @param column - The column to check
+	 * @param row - The row to check
+	 * @return True if there should be water here, false otherwise
+	 */
+	private static boolean shouldBeWater(int column, int row) {
+		return	(row > 4 && row < 10 && column > 28 && column < 39 &&
+				!(row == 9 && column == 29) && !(row == 7 && column == 35) &&
+				!(row == 8 && column == 34) && !(row == 7 && column == 34) &&
+				!(row == 8 && column == 33) && !(row == 9 && column == 33)) ||
+				(row == 4 && column > 30 && column < 36) ||
+				(row == 10 && column > 33 && column < 38);
 	}
 	
 	/**
