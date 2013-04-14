@@ -50,6 +50,7 @@ public class RoomLoader {
 		PowerLoader powerLoader = new PowerLoader();
 		MonsterLoader monsterLoader = new MonsterLoader(game, powerLoader);
 		PlayerLoader playerLoader = new PlayerLoader(game, powerLoader);
+		FeatureLoader featureLoader = new FeatureLoader(game);
 		
 		File file = new File(roomFile);
 		BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -65,10 +66,6 @@ public class RoomLoader {
 			case 0:
 				do {
 					String[] tileStrings = line.split(inLineDeliminator);
-					if (tileStrings.length != GameWindow.GRID_COLUMNS || row == GameWindow.GRID_ROWS) {
-						reader.close();
-						throw new IOException("Layout dimensions are incorrect for file " + roomFile);
-					}
 					for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
 						tiles[column][row] = ImageLoader.loadImage(tileStrings[column]);
 					row++;
@@ -79,10 +76,6 @@ public class RoomLoader {
 			case 1:
 				do {
 					String[] featureStrings = line.split(inLineDeliminator);
-					if (featureStrings.length != GameWindow.GRID_COLUMNS || row == GameWindow.GRID_ROWS) {
-						reader.close();
-						throw new IOException("Layout dimensions are incorrect for file " + roomFile);
-					}
 					for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
 						featureGrid[column][row] = featureStrings[column];
 					row++;
@@ -106,32 +99,13 @@ public class RoomLoader {
 		reader.close();
 		
 		player = playerLoader.loadPlayer(playerStartLocation);
-		features = createFeatures(featureGrid, game);
+		features = featureLoader.createFeatures(featureGrid);
 		
 		monsterLoader.release();
 		powerLoader.release();
 		playerLoader.release();
 		
 		return new RoomData(tiles, features, player, monsters);
-	}
-	
-	/**
-	 * Creates the true feature grid from a string grid.
-	 * @param featureGrid - The string grid
-	 * @param game - The game we're interacting with
-	 * @return The true grid of Feature objects
-	 */
-	private Feature[][] createFeatures(String[][] featureGrid, Game game) {
-		Feature[][] features = new Feature[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
-		ImageTypeChecker imageTypeChecker = new ImageTypeChecker(featureGrid);
-		
-		for (int row = 0; row < GameWindow.GRID_ROWS; row++)
-			for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
-				if (!featureGrid[column][row].equals(Images.NULL_TILE))
-					features[column][row] = new Feature(column, row, imageTypeChecker.computeImage(featureGrid[column][row], column, row), null, game);
-					
-		return features;
-						
 	}
 	
 	/**
