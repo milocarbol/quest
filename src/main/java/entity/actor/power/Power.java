@@ -62,30 +62,13 @@ public class Power {
 	 * @param radius - The radius of the power (single-target radius is 0)
 	 * @param damage - The damage of the power
 	 */
-	public Power(String name, String imageSource, int range, int radius, int damage) {
+	public Power(String name, String imageSource, int range, int radius, int damage, boolean usable) {
 		this.name = name;
 		this.image = ImageLoader.loadImage(imageSource);
 		this.range = range;
 		this.radius = radius;
 		this.damage = damage;
-	}
-	
-	/**
-	 * Creates a melee power.
-	 * @param name - The name of the power
-	 * @param imageSource - The image file
-	 * @param damage - The power's damage
-	 */
-	public Power(String name, String imageSource, int damage) {
-		this(name, imageSource, 1, 0, damage);
-	}
-	
-	/**
-	 * Creates an unavailable power. Unavailable powers can't be used.
-	 */
-	public Power() {
-		this("Unavailable", UNAVAILABLE_IMAGE, 0, 0, 0);
-		this.usable = false;
+		this.usable = usable;
 	}
 	
 	/**
@@ -110,20 +93,4 @@ public class Power {
 	
 	/** @return Whether the power is usable or not **/
 	public boolean isUsable() { return usable; }
-	
-	/**
-	 * Creates a default melee power.
-	 * @return A default melee power instance.
-	 */
-	public static Power createDefaultMeleePower() {
-		return new Power(DEFAULT_MELEE_NAME, DEFAULT_MELEE_IMAGE, DEFAULT_DAMAGE);
-	}
-	
-	/**
-	 * Creates a default ranged power.
-	 * @return A default ranged power instance.
-	 */
-	public static Power createDefaultRangedPower() {
-		return new Power(DEFAULT_RANGED_NAME, DEFAULT_RANGED_IMAGE, DEFAULT_RANGE, 0, DEFAULT_DAMAGE);
-	}
 }

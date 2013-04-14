@@ -1,0 +1,18 @@
+name:Default Melee
+image:default_power_melee
+range:1
+radius:0
+damage:10
+usable:yes
+name:Default Ranged
+image:default_power_ranged
+range:10
+radius:0
+damage:10
+usable:yes
+name:Unavailable
+image:power_unavailable
+range:0
+radius:0
+damage:0
+usable:no

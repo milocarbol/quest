@@ -1,0 +1,6 @@
+name:Default Monster
+health:20
+speed:4
+alive:default_monster
+dead:default_monster_dead
+powers:Default Melee

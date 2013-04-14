@@ -1,6 +1,7 @@
 package control;
 
 import java.awt.Image;
+import java.util.List;
 
 import entity.actor.power.Power;
 
@@ -14,43 +15,19 @@ public class PowerController {
 	/** The number of available powers **/
 	public static final int NUMBER_OF_PLAYER_POWERS = 3;
 	
-	private static final Power unusablePower = new Power();
-	
 	/** The powers available for the player to use **/
 	private Power[] powers;
 	
 	/** The index of the currently active power **/
 	private int activePowerIndex;
 	
-	/**
-	 * Creates a new power controller using a default melee power.
-	 */
-	public PowerController() {
-		powers = new Power[1];
-		powers[0] = Power.createDefaultMeleePower();
-		activePowerIndex = 0;
-	}
-	
-	/**
-	 * Creates a new power controller with a number of power slots.
-	 * If it's for a player, it defaults to one melee, one ranged, and one unusable.
-	 * @param forPlayer - If this is a player power controller. If not, it just adds a default melee.
-	 */
-	public PowerController(boolean forPlayer) {
-		if (forPlayer) {
-			powers = new Power[NUMBER_OF_PLAYER_POWERS];
-			
-			powers[0] = Power.createDefaultMeleePower();
-			powers[1] = Power.createDefaultRangedPower();
-			
-			for (int index = 2; index < NUMBER_OF_PLAYER_POWERS; index++)
-				powers[index] = unusablePower;
-		}
+	public PowerController(List<Power> powers) {
+		if (powers.size() == 0)
+			throw new RuntimeException("Power list length is 0");
 		else {
-			powers = new Power[1];
-			powers[0] = Power.createDefaultMeleePower();
+			this.powers = powers.toArray(new Power[0]);
+			this.activePowerIndex = 0;
 		}
-		activePowerIndex = 0;
 	}
 	
 	/**

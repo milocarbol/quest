@@ -1,12 +1,13 @@
 package entity.actor;
 
 import java.awt.Point;
+import java.util.List;
 
 import loader.ImageLoader;
 import control.Game;
 import control.PowerController;
-import data.Images;
 import entity.actor.pathfinder.DirectPathfinder;
+import entity.actor.power.Power;
 
 
 /**
@@ -15,28 +16,24 @@ import entity.actor.pathfinder.DirectPathfinder;
  * @since 5 April 2013
  */
 public class Player extends Actor {
-
-	/** Player's move speed in hundred-milliseconds per grid space. **/
-	public static final int SPEED = 2;
-	
-	/** Player's maximum health. **/
-	public static final int MAXIMUM_HEALTH = 100;
-	
-	/** Player's default damage for testing **/
-	public static final int DEFAULT_DAMAGE = 20;
 	
 	/**
 	 * Creates a new player.
-	 * @param x - The initial x-coordinate of the player.
-	 * @param y - The initial y-coordinate of the player.
-	 * @param game - The game this player is a part of.
+	 * @param startLocation - The start location in this room
+	 * @param health - The player's maximum health
+	 * @param speed - The player's speed, in milliseconds per grid space
+	 * @param powers - The player's powers
+	 * @param aliveImage - The image to render when the player is alive
+	 * @param deadImage - The image to render when the player is dead
+	 * @param game - The game this player is part of
 	 */
-	public Player(Point startLocation, Game game) {
-		super(startLocation, MAXIMUM_HEALTH, SPEED, new DirectPathfinder(game, startLocation), new PowerController(true), ImageLoader.loadImage(Images.PLAYER_DEFAULT_ALIVE_IMAGE), ImageLoader.loadImage(Images.PLAYER_DEFAULT_DEAD_IMAGE), game);
+	public Player(Point startLocation, int health, int speed, List<Power> powers, String aliveImage, String deadImage, Game game) {
+		super(startLocation, health, speed, new DirectPathfinder(game, startLocation), new PowerController(powers), ImageLoader.loadImage(aliveImage), ImageLoader.loadImage(deadImage), game);
 	}
 	
 	/**
 	 * Player doesn't require any initialisation.
+	 * @deprecated
 	 */
 	@Override
 	public void begin() {

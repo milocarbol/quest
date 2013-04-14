@@ -42,15 +42,13 @@ public class Game {
 		this.layoutLoader = new RoomLoader();		
 		this.room = new Room(layoutLoader, this);
 		
-		Point startLocation = room.getStartLocation();
-		this.player = new Player(startLocation, this);
+		this.player = room.getPlayer();
 		this.monsters = room.getMonsters();
 		
 		this.actorController = new ActorController(this)
 									.withPlayer(player)
 									.withMonsters(monsters);
 		
-		this.player.begin();
 		for (Monster monster : monsters)
 			monster.begin();
 	}

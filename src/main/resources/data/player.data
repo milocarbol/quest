@@ -1,0 +1,6 @@
+name:Player
+health:100
+speed:2
+alive:default_player
+dead:default_player_dead
+powers:Default Melee,Default Ranged,Unavailable,Unavailable

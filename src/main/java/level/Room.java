@@ -2,7 +2,6 @@ package level;
 
 
 import java.awt.Image;
-import java.awt.Point;
 import java.io.IOException;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import control.Game;
 import data.Files;
 import entity.Feature;
 import entity.actor.Monster;
+import entity.actor.Player;
 import gui.GameWindow;
 
 /**
@@ -31,7 +31,7 @@ public class Room {
 	private Feature[][] features;
 	
 	/** The start location for the player on this map **/
-	private Point playerStartLocation;
+	private Player player;
 	
 	/** The monsters on this map **/
 	private List<Monster> monsters;
@@ -45,7 +45,7 @@ public class Room {
 			RoomData roomData = loader.loadRoom(TEST_ROOM, game);
 			tiles = roomData.tiles;
 			features = roomData.features;
-			playerStartLocation = roomData.playerStartLocation;
+			player = roomData.player;
 			monsters = roomData.monsters;
 			
 		} catch (IOException e) {
@@ -53,8 +53,8 @@ public class Room {
 		}
 	}
 	
-	/** @return The start location for the player on this map **/
-	public Point getStartLocation() { return playerStartLocation; }
+	/** @return The player on this map **/
+	public Player getPlayer() { return player; }
 	
 	/** @return The monsters on this map **/
 	public List<Monster> getMonsters() { return monsters; }

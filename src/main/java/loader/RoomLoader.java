@@ -3,7 +3,7 @@ package loader;
 import data.Images;
 import entity.Feature;
 import entity.actor.Monster;
-import entity.actor.power.Power;
+import entity.actor.Player;
 import gui.GameWindow;
 
 import java.awt.Image;
@@ -31,9 +31,6 @@ public class RoomLoader {
 	/** The deliminator for items within a line in the file **/
 	public static final String inLineDeliminator = ":";
 	
-	/** The deliminator for subsections in the file **/
-	private static final String subsectionDeliminator = "---";
-	
 	/** The deliminator for sections in the file **/
 	public static final String sectionDeliminator = "***";
 	
@@ -47,14 +44,17 @@ public class RoomLoader {
 	public RoomData loadRoom(String roomFile, Game game) throws IOException {
 		Image[][] tiles = new Image[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
 		Feature[][] features = new Feature[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
-		Point playerStartLocation = null;
+		Player player;
 		List<Monster> monsters = new LinkedList<Monster>();
 		
 		PowerLoader powerLoader = new PowerLoader();
 		MonsterLoader monsterLoader = new MonsterLoader(game, powerLoader);
+		PlayerLoader playerLoader = new PlayerLoader(game, powerLoader);
 		
 		File file = new File(roomFile);
 		BufferedReader reader = new BufferedReader(new FileReader(file));
+		
+		Point playerStartLocation = null;
 		
 		int section = 0;
 		int row = 0;
@@ -97,11 +97,7 @@ public class RoomLoader {
 				break;
 			case 3:
 				do {
-					String monsterText = "";
-					do {
-						monsterText += line + System.getProperty("line.separator");
-					} while ((line = reader.readLine()) != null && !line.equals(subsectionDeliminator));
-					monsters.add(monsterLoader.loadMonster(monsterText));
+					monsters.add(monsterLoader.loadMonster(line));
 				} while ((line = reader.readLine()) != null && !line.equals(sectionDeliminator));
 				section++;
 				break;
@@ -109,7 +105,9 @@ public class RoomLoader {
 		}
 		reader.close();
 		
-		return new RoomData(tiles, features, playerStartLocation, monsters);
+		player = playerLoader.loadPlayer(playerStartLocation);
+		
+		return new RoomData(tiles, features, player, monsters);
 	}
 	
 	/**
@@ -157,9 +155,7 @@ public class RoomLoader {
 		outWriter.print(sectionDeliminator + System.getProperty("line.separator"));
 		
 		printTestMonster(GameWindow.GRID_COLUMNS - 2, GameWindow.GRID_ROWS - 2, outWriter);
-		outWriter.print(subsectionDeliminator + System.getProperty("line.separator"));
 		printTestMonster(GameWindow.GRID_COLUMNS - 2, 1, outWriter);
-		outWriter.print(subsectionDeliminator + System.getProperty("line.separator"));
 		printTestMonster(1, GameWindow.GRID_ROWS - 2, outWriter);
 		
 		outWriter.close();
@@ -172,17 +168,8 @@ public class RoomLoader {
 	 * @param outWriter - The writer to write to
 	 */
 	private static void printTestMonster(int column, int row, PrintWriter outWriter) {
-		outWriter.print(column + inLineDeliminator + row + inLineDeliminator);
-		outWriter.print(Monster.DEFAULT_HEALTH + inLineDeliminator);
-		outWriter.print(Monster.DEFAULT_MONSTER_SPEED + inLineDeliminator);
-		outWriter.print(Images.MONSTER_DEFAULT_ALIVE_IMAGE + inLineDeliminator);
-		outWriter.print(Images.MONSTER_DEFAULT_DEAD_IMAGE);
-		outWriter.print(System.getProperty("line.separator"));
-		outWriter.print("default" + inLineDeliminator);
-		outWriter.print(Power.DEFAULT_MELEE_IMAGE + inLineDeliminator);
-		outWriter.print(1 + inLineDeliminator);
-		outWriter.print(0 + inLineDeliminator);
-		outWriter.print(Power.DEFAULT_DAMAGE);
+		outWriter.print("Default Monster" + inLineDeliminator);
+		outWriter.print(column + inLineDeliminator + row);
 		outWriter.print(System.getProperty("line.separator"));
 	}
 }
