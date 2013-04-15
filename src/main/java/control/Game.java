@@ -5,6 +5,7 @@ import java.util.List;
 
 import level.Room;
 import loader.FeatureLoader;
+import loader.MonsterLoader;
 import loader.PlayerLoader;
 import loader.PowerLoader;
 import loader.RoomDataLoader;
@@ -13,6 +14,7 @@ import entity.actor.Actor;
 import entity.actor.Monster;
 import entity.actor.Player;
 import generator.ConstrainedWallGenerator;
+import generator.IWallGenerator;
 import generator.RoomGenerator;
 import gui.GameWindow;
 
@@ -41,8 +43,14 @@ public class Game {
 	/**
 	 * Makes a new game and puts the player and monsters in place for testing.
 	 */
-	public Game() {	
-		this.room = new Room(new RoomGenerator(Rooms.DUNGEON, new ConstrainedWallGenerator(), new RoomDataLoader(), new FeatureLoader(this), new PlayerLoader(this, new PowerLoader())), this);
+	public Game() {
+		IWallGenerator wallGenerator = new ConstrainedWallGenerator();
+		RoomDataLoader dataLoader = new RoomDataLoader();
+		FeatureLoader featureLoader = new FeatureLoader(this);
+		PowerLoader powerLoader = new PowerLoader();
+		PlayerLoader playerLoader = new PlayerLoader(this, powerLoader);
+		MonsterLoader monsterLoader = new MonsterLoader(this, powerLoader);
+		this.room = new Room(new RoomGenerator(Rooms.DUNGEON, wallGenerator, dataLoader, featureLoader, playerLoader, monsterLoader), this);
 		
 		this.player = room.getPlayer();
 		this.monsters = room.getMonsters();

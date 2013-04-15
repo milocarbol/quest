@@ -9,6 +9,7 @@ import java.util.Map;
 import loader.FeatureLoader;
 import loader.IRoomLoader;
 import loader.ImageLoader;
+import loader.MonsterLoader;
 import loader.PlayerLoader;
 import loader.RoomData;
 import loader.RoomDataLoader;
@@ -37,8 +38,14 @@ public class RoomGenerator implements IRoomLoader {
 	/** The loader for the player **/
 	private final PlayerLoader playerLoader;
 	
+	/** The loader for the monsters **/
+	private final MonsterLoader monsterLoader;
+	
 	/** The deliminator between available types **/
 	private static final String deliminator = ",";
+	
+	private static final int	maximumNumberOfMonsters = 8,
+								minimumNumberOfMonsters = 3;
 	
 	/**
 	 * Creates a new Room Generator.
@@ -48,11 +55,12 @@ public class RoomGenerator implements IRoomLoader {
 	 * @param featureLoader - The loader for features.
 	 * @param playerLoader - The loader for the player.
 	 */
-	public RoomGenerator(String roomType, IWallGenerator wallGenerator, RoomDataLoader dataLoader, FeatureLoader featureLoader, PlayerLoader playerLoader) {
+	public RoomGenerator(String roomType, IWallGenerator wallGenerator, RoomDataLoader dataLoader, FeatureLoader featureLoader, PlayerLoader playerLoader, MonsterLoader monsterLoader) {
 		this.data = dataLoader.loadRoomData(roomType);
 		this.wallGenerator = wallGenerator;
 		this.featureLoader = featureLoader;
 		this.playerLoader = playerLoader;
+		this.monsterLoader = monsterLoader;
 	}
 	
 	/**
@@ -66,9 +74,27 @@ public class RoomGenerator implements IRoomLoader {
 		Image[][] tiles = buildTileMap(tileStrings);
 		Feature[][] features = buildFeatureMap(featureStrings);
 		Player player = playerLoader.loadPlayer(new Point(1, 1));
-		List<Monster> monsters = new LinkedList<Monster>();
+		List<Monster> monsters = generateMonsters(features);
 		
 		return new RoomData(tiles, features, player, monsters);
+	}
+	
+	private List<Monster> generateMonsters(Feature[][] features) {
+		List<Monster> monsters = new LinkedList<Monster>();
+		
+		List<Point> availablePoints = new LinkedList<Point>();
+		for (int row = 0; row < GameWindow.GRID_ROWS; row++)
+			for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
+				if (features[column][row] == null && ! (column == 1 && row == 1))
+					availablePoints.add(new Point(column, row));
+		
+		for (int i = 0; i < RandomNumber.randomBetween(minimumNumberOfMonsters, maximumNumberOfMonsters + 1); i++) {
+			int pointIndex = RandomNumber.randomBetween(0, availablePoints.size());
+			monsters.add(monsterLoader.loadMonster("Default Monster", availablePoints.get(pointIndex)));
+			availablePoints.remove(pointIndex);
+		}
+		
+		return monsters;
 	}
 	
 	/**

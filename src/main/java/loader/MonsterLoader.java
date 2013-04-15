@@ -43,6 +43,11 @@ public class MonsterLoader extends DataLoader {
 		
 		String name = monsterData[0];
 		Point location = new Point(Integer.parseInt(monsterData[1]), Integer.parseInt(monsterData[2]));
+		
+		return loadMonster(name, location);
+	}
+	
+	public Monster loadMonster(String name, Point location) {
 		Map<String, String> details = data.get(name);
 		int health = Integer.parseInt(details.get("health"));
 		int speed = Integer.parseInt(details.get("speed"));
