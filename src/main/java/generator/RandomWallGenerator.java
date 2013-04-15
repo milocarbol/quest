@@ -54,14 +54,14 @@ public class RandomWallGenerator implements IWallGenerator {
 	private List<Point> generateStraightWalls() {
 		List<Point> wallLocations = new LinkedList<Point>();
 		
-		int numberOfWallChunks = randomBetween(minimumNumberOfWallChunks, maximumNumberOfWallChunks);
+		int numberOfWallChunks = RandomNumber.randomBetween(minimumNumberOfWallChunks, maximumNumberOfWallChunks);
 		for (int i = 0; i < numberOfWallChunks; i++) {
 			boolean horizontal = (int)(Math.random() * 2) == 0;
 			
 			if (horizontal) {
-				int width = randomBetween(minimumWallWidth, maximumWallWidth);
-				int startColumn = randomBetween(0, GameWindow.GRID_COLUMNS - width);
-				int startRow = randomBetween(0, GameWindow.GRID_ROWS);
+				int width = RandomNumber.randomBetween(minimumWallWidth, maximumWallWidth);
+				int startColumn = RandomNumber.randomBetween(0, GameWindow.GRID_COLUMNS - width);
+				int startRow = RandomNumber.randomBetween(0, GameWindow.GRID_ROWS);
 				
 				for (int x = 0; x < width; x++) {
 					int column = startColumn + x;
@@ -72,9 +72,9 @@ public class RandomWallGenerator implements IWallGenerator {
 				}
 			}
 			else {
-				int height = randomBetween(minimumWallHeight, maximumWallHeight);
-				int startColumn = randomBetween(0, GameWindow.GRID_COLUMNS);
-				int startRow = randomBetween(0, GameWindow.GRID_ROWS - height);
+				int height = RandomNumber.randomBetween(minimumWallHeight, maximumWallHeight);
+				int startColumn = RandomNumber.randomBetween(0, GameWindow.GRID_COLUMNS);
+				int startRow = RandomNumber.randomBetween(0, GameWindow.GRID_ROWS - height);
 				
 				for (int y = 0; y < height; y++) {
 					int row = startRow + y;
@@ -96,12 +96,12 @@ public class RandomWallGenerator implements IWallGenerator {
 	private Map<Point, String> generateWalledRooms(String wallType) {
 		Map<Point, String> wallLocations = new HashMap<Point, String>();
 		
-		int numberOfRooms = randomBetween(minimumNumberOfRooms, maximumNumberOfRooms);
+		int numberOfRooms = RandomNumber.randomBetween(minimumNumberOfRooms, maximumNumberOfRooms);
 		for (int i = 0; i < numberOfRooms; i++) {		
-			int width = randomBetween(minimumWallWidth, maximumWallWidth);
-			int height = randomBetween(minimumWallHeight, maximumWallHeight);
+			int width = RandomNumber.randomBetween(minimumWallWidth, maximumWallWidth);
+			int height = RandomNumber.randomBetween(minimumWallHeight, maximumWallHeight);
 			
-			Point topLeftCorner = new Point(randomBetween(0, GameWindow.GRID_COLUMNS - width), randomBetween(0, GameWindow.GRID_ROWS - height));
+			Point topLeftCorner = new Point(RandomNumber.randomBetween(0, GameWindow.GRID_COLUMNS - width), RandomNumber.randomBetween(0, GameWindow.GRID_ROWS - height));
 			for (int x = 0; x < width; x++)
 				for (int y = 0; y < height; y++) {
 					int column = topLeftCorner.x + x;
@@ -116,15 +116,5 @@ public class RandomWallGenerator implements IWallGenerator {
 		}
 		
 		return wallLocations;
-	}
-	
-	/**
-	 * Generates a random number between two parameters.
-	 * @param low - Lower bound (inclusive)
-	 * @param high - Upper bound (exclusive)
-	 * @return A random number between the upper and lower bounds
-	 */
-	private static int randomBetween(int low, int high) {
-		return (int)(Math.random() * (high - low) + low);
 	}
 }
