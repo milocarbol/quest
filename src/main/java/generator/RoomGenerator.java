@@ -1,14 +1,7 @@
 package generator;
 
-import data.Images;
-import entity.Feature;
-import entity.actor.Monster;
-import entity.actor.Player;
-import gui.GameWindow;
-
 import java.awt.Image;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +12,11 @@ import loader.ImageLoader;
 import loader.PlayerLoader;
 import loader.RoomData;
 import loader.RoomDataLoader;
+import data.Images;
+import entity.Feature;
+import entity.actor.Monster;
+import entity.actor.Player;
+import gui.GameWindow;
 
 /**
  * Generates a room.
@@ -27,18 +25,11 @@ import loader.RoomDataLoader;
  */
 public class RoomGenerator implements IRoomLoader {
 	
-	private static final int	maximumNumberOfWallChunks = 5,
-								minimumNumberOfWallChunks = 3,
-								maximumNumberOfRooms = 6,
-								minimumNumberOfRooms = 2;
-	
-	private static final int	maximumWallWidth = GameWindow.GRID_COLUMNS / 2,
-								minimumWallWidth = 7,
-								maximumWallHeight = GameWindow.GRID_ROWS / 2,
-								minimumWallHeight = 7;
-	
 	/** Room data lookup map **/
 	private final Map<String, String> data;
+	
+	/** The wall generator to use **/
+	private final IWallGenerator wallGenerator;
 	
 	/** The loader for features **/
 	private final FeatureLoader featureLoader;
@@ -52,12 +43,14 @@ public class RoomGenerator implements IRoomLoader {
 	/**
 	 * Creates a new Room Generator.
 	 * @param roomType - The type of room to generate.
+	 * @param wallGenerator - The wall generator to use
 	 * @param dataLoader - The loader for room data.
 	 * @param featureLoader - The loader for features.
 	 * @param playerLoader - The loader for the player.
 	 */
-	public RoomGenerator(String roomType, RoomDataLoader dataLoader, FeatureLoader featureLoader, PlayerLoader playerLoader) {
+	public RoomGenerator(String roomType, IWallGenerator wallGenerator, RoomDataLoader dataLoader, FeatureLoader featureLoader, PlayerLoader playerLoader) {
 		this.data = dataLoader.loadRoomData(roomType);
+		this.wallGenerator = wallGenerator;
 		this.featureLoader = featureLoader;
 		this.playerLoader = playerLoader;
 	}
@@ -122,22 +115,8 @@ public class RoomGenerator implements IRoomLoader {
 				featureStrings[column][row] = Images.NULL_TILE;
 		
 		String wallType = randomizeType(data.get("wall"));
-//		for (Point wall : generateStraightWalls())
-//			featureStrings[wall.x][wall.y] = wallType;
-//		
-//		Map<Point, String> walledRooms = generateWalledRooms(wallType);
-//		for (Point wall : walledRooms.keySet())
-//			featureStrings[wall.x][wall.y] = walledRooms.get(wall); 
 		
-		List<Point> walls = generateStraightWalls();
-		Map<Point, String> walledRooms = generateWalledRooms(wallType);
-		for (Point wall : walledRooms.keySet())
-			if (walledRooms.get(wall).equals(wallType) && !walls.contains(wall))
-				walls.add(wall);
-			else if (walledRooms.get(wall).equals(Images.NULL_TILE) && walls.contains(wall))
-				walls.remove(wall);
-		
-		walls = new WallCleaner(walls).cleanWalls();
+		List<Point> walls = wallGenerator.generateWalls(wallType);
 		
 		for (Point wall : walls)
 			featureStrings[wall.x][wall.y] = wallType;
@@ -155,69 +134,6 @@ public class RoomGenerator implements IRoomLoader {
 		return featureLoader.createFeatures(featureStrings);
 	}
 	
-	private List<Point> generateStraightWalls() {
-		List<Point> wallLocations = new LinkedList<Point>();
-		
-		int numberOfWallChunks = randomBetween(minimumNumberOfWallChunks, maximumNumberOfWallChunks);
-		for (int i = 0; i < numberOfWallChunks; i++) {
-			boolean horizontal = (int)(Math.random() * 2) == 0;
-			
-			if (horizontal) {
-				int width = randomBetween(minimumWallWidth, maximumWallWidth);
-				int startColumn = randomBetween(0, GameWindow.GRID_COLUMNS - width);
-				int startRow = randomBetween(0, GameWindow.GRID_ROWS);
-				
-				for (int x = 0; x < width; x++) {
-					int column = startColumn + x;
-					if (column >= 0 && column < GameWindow.GRID_COLUMNS)
-						wallLocations.add(new Point(column, startRow));
-					else
-						break;
-				}
-			}
-			else {
-				int height = randomBetween(minimumWallHeight, maximumWallHeight);
-				int startColumn = randomBetween(0, GameWindow.GRID_COLUMNS);
-				int startRow = randomBetween(0, GameWindow.GRID_ROWS - height);
-				
-				for (int y = 0; y < height; y++) {
-					int row = startRow + y;
-					if (row >= 0 && row < GameWindow.GRID_ROWS)
-						wallLocations.add(new Point(startColumn, row));
-					else
-						break;
-				}
-			}
-		}
-		
-		return wallLocations;
-	}
-	
-	private Map<Point, String> generateWalledRooms(String wallType) {
-		Map<Point, String> wallLocations = new HashMap<Point, String>();
-		
-		int numberOfRooms = randomBetween(minimumNumberOfRooms, maximumNumberOfRooms);
-		for (int i = 0; i < numberOfRooms; i++) {		
-			int width = randomBetween(minimumWallWidth, maximumWallWidth);
-			int height = randomBetween(minimumWallHeight, maximumWallHeight);
-			
-			Point topLeftCorner = new Point(randomBetween(0, GameWindow.GRID_COLUMNS - width), randomBetween(0, GameWindow.GRID_ROWS - height));
-			for (int x = 0; x < width; x++)
-				for (int y = 0; y < height; y++) {
-					int column = topLeftCorner.x + x;
-					int row = topLeftCorner.y + y;
-					if (column >= 0 && column < GameWindow.GRID_COLUMNS &&
-						row >= 0 && row < GameWindow.GRID_ROWS)
-						if (x == 0 || x == width - 1 || y == 0 || y == height - 1)
-							wallLocations.put(new Point(column, row), wallType);
-						else
-							wallLocations.put(new Point(column, row), Images.NULL_TILE);
-				}
-		}
-		
-		return wallLocations;
-	}
-	
 	/**
 	 * Randomly chooses a type from those available.
 	 * @param typeString - The available types, deliminated by RoomGenerator.deliminator
@@ -226,9 +142,5 @@ public class RoomGenerator implements IRoomLoader {
 	private String randomizeType(String typeString) {
 		String[] types = typeString.split(deliminator);
 		return types[(int)(Math.random()*types.length)];
-	}
-	
-	private static int randomBetween(int low, int high) {
-		return (int)(Math.random() * (high - low) + low);
 	}
 }

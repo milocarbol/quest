@@ -12,6 +12,7 @@ import data.Rooms;
 import entity.actor.Actor;
 import entity.actor.Monster;
 import entity.actor.Player;
+import generator.RandomWallGenerator;
 import generator.RoomGenerator;
 import gui.GameWindow;
 
@@ -41,7 +42,7 @@ public class Game {
 	 * Makes a new game and puts the player and monsters in place for testing.
 	 */
 	public Game() {	
-		this.room = new Room(new RoomGenerator(Rooms.DUNGEON, new RoomDataLoader(), new FeatureLoader(this), new PlayerLoader(this, new PowerLoader())), this);
+		this.room = new Room(new RoomGenerator(Rooms.DUNGEON, new RandomWallGenerator(), new RoomDataLoader(), new FeatureLoader(this), new PlayerLoader(this, new PowerLoader())), this);
 		
 		this.player = room.getPlayer();
 		this.monsters = room.getMonsters();

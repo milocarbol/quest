@@ -7,18 +7,36 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Navigates a node map of wall locations and creates entrances into closed loops.
+ * @author Milo Carbol
+ * @since 14 April 2013
+ * @deprecated - Can loop forever
+ */
 public class WallCleaner {
 
+	/** Number of wall pieces to remove when creating an entrance **/
 	private final int numberOfWallsToClean = 8;
 	
+	/** The node map **/
 	private List<WallCleanerNode> allNodes;
+	
+	/** The wall locations **/
 	private List<Point> walls;
 	
+	/**
+	 * Creates a new wall cleaner.
+	 * @param walls - The wall locations. Not modified by cleaning.
+	 */
 	public WallCleaner(List<Point> walls) {
 		this.walls = walls;
 		this.allNodes = new ArrayList<WallCleanerNode>();
 	}
 	
+	/**
+	 * Navigates the node map and creates entrances into closed loops.
+	 * @return The updated list of wall locations
+	 */
 	public List<Point> cleanWalls() {
 		List<Point> cleanedWalls = new LinkedList<Point>();
 		
@@ -59,6 +77,16 @@ public class WallCleaner {
 		return cleanedWalls;
 	}
 	
+	/**
+	 * Recursively navigates the node map, going up and right when possible.
+	 * Cleans once it hits a visited node (meaning it has found a closed loop).
+	 * @param currentNode - The current node
+	 * @param previousNode - The previous node
+	 * @param visitedNodes - The list of already-visited nodes
+	 * @param cleaning - Whether we're creating an entrance now
+	 * @param cleaned - How many walls we've removed in this entrance
+	 * @return null when finished
+	 */
 	private WallCleanerNode clean(WallCleanerNode currentNode, WallCleanerNode previousNode, Set<WallCleanerNode> visitedNodes, boolean cleaning, int cleaned) {
 		if (cleaning) {
 			if (cleaned < numberOfWallsToClean) {
@@ -99,6 +127,7 @@ public class WallCleaner {
 		return null;
 	}
 	
+	/** @return The lowest, left-most node that hasn't been handled yet. **/
 	private WallCleanerNode getStartNode() {
 		WallCleanerNode startNode = allNodes.get(0);
 		for (WallCleanerNode node : allNodes) {
