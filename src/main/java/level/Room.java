@@ -5,8 +5,8 @@ import java.awt.Image;
 import java.io.IOException;
 import java.util.List;
 
+import loader.IRoomLoader;
 import loader.RoomData;
-import loader.RoomLoader;
 import control.Game;
 import data.Files;
 import entity.Feature;
@@ -40,9 +40,9 @@ public class Room {
 	 * Creates a new room and fills it with tiles and features.
 	 * @throws RuntimeException if the tiles and features loaded from the file don't match, or if the room can't be loaded.
 	 */
-	public Room(RoomLoader loader, Game game) {
+	public Room(IRoomLoader loader, Game game) {
 		try {
-			RoomData roomData = loader.loadRoom(TEST_ROOM, game);
+			RoomData roomData = loader.loadRoom();
 			tiles = roomData.tiles;
 			features = roomData.features;
 			player = roomData.player;

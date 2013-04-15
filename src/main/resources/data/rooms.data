@@ -1,0 +1,5 @@
+name:Dungeon
+floor:floor_stone
+water:water
+wall:wall
+obstacle:column

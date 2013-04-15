@@ -26,13 +26,24 @@ import control.Game;
  * @author Milo
  * @since 8 April 2013
  */
-public class RoomLoader {
+public class RoomLoader implements IRoomLoader {
 	
 	/** The deliminator for items within a line in the file **/
 	public static final String inLineDeliminator = ":";
 	
 	/** The deliminator for sections in the file **/
 	public static final String sectionDeliminator = "***";
+	
+	/** The file to load **/
+	private final String roomFile;
+	
+	/** The game the room is for **/
+	private final Game game;
+	
+	public RoomLoader(String roomFile, Game game) {
+		this.roomFile = roomFile;
+		this.game = game;
+	}
 	
 	/**
 	 * Creates a map from a file.
@@ -41,7 +52,7 @@ public class RoomLoader {
 	 * @return The data loaded from the file.
 	 * @throws IOException if the file can't be found or the layout doesn't match the standard dimensions.
 	 */
-	public RoomData loadRoom(String roomFile, Game game) throws IOException {
+	public RoomData loadRoom() throws IOException {
 		Image[][] tiles = new Image[GameWindow.GRID_COLUMNS][GameWindow.GRID_ROWS];
 		Feature[][] features;
 		Player player;

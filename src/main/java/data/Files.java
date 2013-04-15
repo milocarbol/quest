@@ -9,4 +9,5 @@ public class Files {
 	public static final String MONSTERS = "monsters";
 	public static final String POWERS = "powers";
 	public static final String PLAYER = "player";
+	public static final String ROOM_DATA = "rooms";
 }

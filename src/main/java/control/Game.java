@@ -4,10 +4,15 @@ import java.awt.Point;
 import java.util.List;
 
 import level.Room;
-import loader.RoomLoader;
+import loader.FeatureLoader;
+import loader.PlayerLoader;
+import loader.PowerLoader;
+import loader.RoomDataLoader;
+import data.Rooms;
 import entity.actor.Actor;
 import entity.actor.Monster;
 import entity.actor.Player;
+import generator.RoomGenerator;
 import gui.GameWindow;
 
 /**
@@ -32,15 +37,11 @@ public class Game {
 	/** The current map **/
 	private Room room;
 	
-	/** The layout loader used for loading maps **/
-	private RoomLoader layoutLoader;
-	
 	/**
 	 * Makes a new game and puts the player and monsters in place for testing.
 	 */
-	public Game() {
-		this.layoutLoader = new RoomLoader();		
-		this.room = new Room(layoutLoader, this);
+	public Game() {	
+		this.room = new Room(new RoomGenerator(Rooms.DUNGEON, new RoomDataLoader(), new FeatureLoader(this), new PlayerLoader(this, new PowerLoader())), this);
 		
 		this.player = room.getPlayer();
 		this.monsters = room.getMonsters();

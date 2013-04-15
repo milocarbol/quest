@@ -13,7 +13,7 @@ import data.Files;
  * @author Milo Carbol
  * @since 13 April 2013
  */
-public class DataLoader {
+public abstract class DataLoader {
 	
 	/** The deliminator between name and value in each line **/
 	private static String deliminator = ":";
