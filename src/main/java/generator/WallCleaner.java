@@ -8,15 +8,21 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Navigates a node map of wall locations and creates entrances into closed loops.
+ * Navigates a node map of wall locations and creates random entrances into closed loops.
  * @author Milo Carbol
  * @since 14 April 2013
- * @deprecated - Can loop forever
  */
 public class WallCleaner {
 
 	/** Number of wall pieces to remove when creating an entrance **/
-	private final int numberOfWallsToClean = 8;
+	private final int 	minimumSizeOfEntrance = 2,
+						maximumSizeOfEntrance = 10;
+	
+	private final int	minimumWallsToWait = 0,
+						maximumWallsToWait = 50;
+	
+	private final int	minimumEntrancesToMake = 1,
+						maximumEntrancesToMake = 4;
 	
 	/** The node map **/
 	private List<WallCleanerNode> allNodes;
@@ -66,8 +72,8 @@ public class WallCleaner {
 		for (int i = 0; i < 2; i++) {
 			Set<WallCleanerNode> visitedNodes = new HashSet<WallCleanerNode>();
 			WallCleanerNode startNode;
-			while ((startNode = getStartNode()).notHandled) {
-				clean(startNode, startNode, visitedNodes, false, 0);
+			while ((startNode = getStartNode()) != null) {
+				clean(startNode, startNode, visitedNodes, false, 0, 0, RandomNumber.randomBetween(minimumEntrancesToMake, maximumEntrancesToMake));
 			}
 			
 			for (WallCleanerNode node : allNodes)
@@ -87,59 +93,88 @@ public class WallCleaner {
 	 * @param cleaned - How many walls we've removed in this entrance
 	 * @return null when finished
 	 */
-	private WallCleanerNode clean(WallCleanerNode currentNode, WallCleanerNode previousNode, Set<WallCleanerNode> visitedNodes, boolean cleaning, int cleaned) {
+	private WallCleanerNode clean(WallCleanerNode currentNode, WallCleanerNode previousNode, Set<WallCleanerNode> visitedNodes, boolean cleaning, int toClean, int toWait, int entrancesToMake) {
 		if (cleaning) {
-			if (cleaned < numberOfWallsToClean) {
-				if (cleaned >= 0)
+			if (toClean > 0) {
+				if (toWait > 0) {
+					toWait--;
+				}
+				else {
 					allNodes.remove(currentNode);
-				cleaned++;
+					toClean--;
+				}
 				if (currentNode.up != null && currentNode.up != previousNode)
-					return clean(currentNode.up, currentNode, visitedNodes, cleaning, cleaned);
+					return clean(currentNode.up, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 				if (currentNode.right != null && currentNode.right != previousNode)
-					return clean(currentNode.right, currentNode, visitedNodes, cleaning, cleaned);
+					return clean(currentNode.right, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 				if (currentNode.down != null && currentNode.down != previousNode)
-					return clean(currentNode.down, currentNode, visitedNodes, cleaning, cleaned);
+					return clean(currentNode.down, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 				if (currentNode.left != null && currentNode.left != previousNode)
-					return clean(currentNode.left, currentNode, visitedNodes, cleaning, cleaned);
+					return clean(currentNode.left, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+			}
+			else if (entrancesToMake > 0) {
+				entrancesToMake--;
+				toWait = RandomNumber.randomBetween(minimumWallsToWait, maximumWallsToWait);
+				toClean = RandomNumber.randomBetween(minimumSizeOfEntrance, maximumSizeOfEntrance);
+				if (currentNode.up != null && currentNode.up != previousNode)
+					return clean(currentNode.up, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				if (currentNode.right != null && currentNode.right != previousNode)
+					return clean(currentNode.right, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				if (currentNode.down != null && currentNode.down != previousNode)
+					return clean(currentNode.down, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				if (currentNode.left != null && currentNode.left != previousNode)
+					return clean(currentNode.left, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				
 			}
 		}
 		else {
 			if (visitedNodes.contains(currentNode)) {
 				cleaning = true;
+				toWait = RandomNumber.randomBetween(minimumWallsToWait, maximumWallsToWait);
+				toClean = RandomNumber.randomBetween(minimumSizeOfEntrance, maximumSizeOfEntrance);
 				if (currentNode.up != null && currentNode.up != previousNode)
-					return clean(currentNode.up, currentNode, visitedNodes, cleaning, cleaned);
+					return clean(currentNode.up, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 				if (currentNode.right != null && currentNode.right != previousNode)
-					return clean(currentNode.right, currentNode, visitedNodes, cleaning, cleaned);
+					return clean(currentNode.right, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 				if (currentNode.down != null && currentNode.down != previousNode)
-					return clean(currentNode.down, currentNode, visitedNodes, cleaning, cleaned);
+					return clean(currentNode.down, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 				if (currentNode.left != null && currentNode.left != previousNode)
-					return clean(currentNode.left, currentNode, visitedNodes, cleaning, cleaned);
+					return clean(currentNode.left, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 			}
 			else {
 				visitedNodes.add(currentNode);
 				currentNode.notHandled = false;
 			}
 			if (currentNode.up != null)
-				return clean(currentNode.up, currentNode, visitedNodes, cleaning, cleaned);
+				return clean(currentNode.up, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 			if (currentNode.right != null)
-				return clean(currentNode.right, currentNode, visitedNodes, cleaning, cleaned);
+				return clean(currentNode.right, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 		}
 		return null;
 	}
 	
 	/** @return The lowest, left-most node that hasn't been handled yet. **/
 	private WallCleanerNode getStartNode() {
-		WallCleanerNode startNode = allNodes.get(0);
-		for (WallCleanerNode node : allNodes) {
-			if (node.notHandled) {
-				startNode = node;
-				break;
+		if (allNodes.size() == 0)
+			return null;
+		else {
+			WallCleanerNode startNode = allNodes.get(0);
+			for (WallCleanerNode node : allNodes) {
+				if (node.notHandled) {
+					startNode = node;
+					break;
+				}
 			}
+			for (WallCleanerNode node : allNodes) {
+				if (node.notHandled && node.location.x <= startNode.location.x && node.location.y >= startNode.location.y)
+					startNode = node;
+			}
+			
+
+			if (startNode.notHandled)
+				return startNode;
+			else
+				return null;
 		}
-		for (WallCleanerNode node : allNodes) {
-			if (node.notHandled && node.location.x <= startNode.location.x && node.location.y >= startNode.location.y)
-				startNode = node;
-		}
-		return startNode;
 	}
 }

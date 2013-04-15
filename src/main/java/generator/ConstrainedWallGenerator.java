@@ -58,12 +58,6 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	private List<Point> generateBorderPassageLayout() {
 		List<Point> walls = new LinkedList<Point>();
 		
-		for (int row = 0; row < GameWindow.GRID_ROWS; row++)
-			for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
-				if (row == 0 || row == GameWindow.GRID_ROWS - 1 ||
-					column == 0 || column == GameWindow.GRID_COLUMNS - 1)
-					walls.add(new Point(column, row));
-		
 		Map<String, int[]> horizontalData = generateAxisRoomData(GameWindow.GRID_COLUMNS);
 		int[] horizontalSpacings = horizontalData.get(SPACING);
 		int[] widths = horizontalData.get(SIZE);
@@ -97,6 +91,14 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 				}
 			}
 		}
+		
+		walls = new WallCleaner(walls).cleanWalls();
+		
+		for (int row = 0; row < GameWindow.GRID_ROWS; row++)
+			for (int column = 0; column < GameWindow.GRID_COLUMNS; column++)
+				if (row == 0 || row == GameWindow.GRID_ROWS - 1 ||
+					column == 0 || column == GameWindow.GRID_COLUMNS - 1)
+					walls.add(new Point(column, row));
 		
 		return walls;
 	}

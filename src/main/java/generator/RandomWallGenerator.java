@@ -14,6 +14,7 @@ import data.Images;
  * Generates a random wall pattern of rooms and straight chunks.
  * @author Milo Carbol
  * @since 14 April 2013
+ * @deprecated - Too random, can trigger an infinite loop in the wall cleaner
  */
 public class RandomWallGenerator implements IWallGenerator {
 
