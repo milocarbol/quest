@@ -25,12 +25,12 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	private static final int numberOfLayouts = 1;
 	
 	/** Constraints **/
-	private static final int	minimumBorderPassageWidth = 4,
-								maximumBorderPassageWidth = 8,
-								minimumRoomSize = 6,
-								maximumRoomSize = 10,
+	private static final int	minimumRoomWidth = 10,
+								maximumRoomWidth = 18,
+								minimumRoomHeight = 6,
+								maximumRoomHeight = 14,
 								minimumSpacing = 2,
-								maximumSpacing = 20;
+								maximumSpacing = 4;
 			
 	private double percentChanceToCreateRoom = 0.75;
 	/**
@@ -52,41 +52,56 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	/**
 	 * Generates walls using the "Border Passage" layout.
 	 * The "Border Passage" layout has rooms in the centre and a clear path around the border.
-	 * TODO - Add doors to rooms. Add more randomness.
+	 * TODO - Clean this up.
 	 * @return The list of wall locations
 	 */
 	private List<Point> generateBorderPassageLayout() {
 		List<Point> walls = new LinkedList<Point>();
 		
-		Map<String, int[]> horizontalData = generateAxisRoomData(GameWindow.GRID_COLUMNS);
+		Map<String, int[]> horizontalData = generateAxisRoomData(GameWindow.GRID_COLUMNS, minimumRoomWidth, maximumRoomWidth);
 		int[] horizontalSpacings = horizontalData.get(SPACING);
 		int[] widths = horizontalData.get(SIZE);
 		
-		Map<String, int[]> verticalData = generateAxisRoomData(GameWindow.GRID_ROWS);
+		Map<String, int[]> verticalData = generateAxisRoomData(GameWindow.GRID_ROWS, minimumRoomHeight, maximumRoomHeight);
 		int[] verticalSpacings = verticalData.get(SPACING);
 		int[] heights = verticalData.get(SIZE);
 		
-		for (int horizontalRoomsMade = 0; horizontalRoomsMade < horizontalSpacings.length; horizontalRoomsMade++) {
+		for (int horizontalRoomsMade = 0; horizontalRoomsMade < horizontalSpacings.length - 1; horizontalRoomsMade++) {
 			
-			for (int verticalRoomsMade = 0; verticalRoomsMade < verticalSpacings.length; verticalRoomsMade++) {
+			for (int verticalRoomsMade = 0; verticalRoomsMade < verticalSpacings.length - 1; verticalRoomsMade++) {
 			
+				int verticalOffset = sumTo(verticalRoomsMade, verticalSpacings);
+				int topRow = 1 + verticalRoomsMade * heights[verticalRoomsMade] + verticalOffset;
+				int bottomRow = (verticalRoomsMade + 1) * heights[verticalRoomsMade] + verticalOffset;
 				
-				if (Math.random() < percentChanceToCreateRoom) {
-					int verticalOffset = sumTo(verticalRoomsMade, verticalSpacings);
-					int topRow = 1 + verticalRoomsMade * heights[verticalRoomsMade] + verticalOffset;
-					int bottomRow = (verticalRoomsMade + 1) * heights[verticalRoomsMade] + verticalOffset;
+				for (int row = topRow; row <= bottomRow; row++) {
 					
-					for (int row = topRow; row <= bottomRow; row++) {
-						
-						int horizontalOffset = sumTo(horizontalRoomsMade, horizontalSpacings);
-						int leftColumn = 1 + horizontalRoomsMade * widths[horizontalRoomsMade] + horizontalOffset;
-						int rightColumn = (horizontalRoomsMade + 1) * widths[horizontalRoomsMade] + horizontalOffset;
-						
+					int horizontalOffset = sumTo(horizontalRoomsMade, horizontalSpacings);
+					int leftColumn = 1 + horizontalRoomsMade * widths[horizontalRoomsMade] + horizontalOffset;
+					int rightColumn = (horizontalRoomsMade + 1) * widths[horizontalRoomsMade] + horizontalOffset;
+					
+					if (Math.random() < percentChanceToCreateRoom) {
 						for (int column = leftColumn; column <= rightColumn; column++) {
 							if (row == topRow || row == bottomRow ||
 								column == leftColumn || column == rightColumn)
 								walls.add(new Point(column, row));
 						}
+					}
+					
+					if (horizontalRoomsMade < horizontalSpacings.length - 2 && row == topRow + (bottomRow - topRow) / 2 && Math.random() < percentChanceToCreateRoom) {
+						leftColumn = rightColumn + 1;
+						rightColumn = leftColumn + horizontalSpacings[horizontalRoomsMade + 1];
+						for (int column = leftColumn; column <= rightColumn; column++)
+							walls.add(new Point(column, row));
+					}
+				}
+				
+				if (verticalRoomsMade < verticalSpacings.length - 2 && Math.random() < percentChanceToCreateRoom) {
+					topRow = bottomRow + 1;
+					bottomRow = topRow + verticalSpacings[verticalRoomsMade + 1];
+					int column = 1 + horizontalRoomsMade * widths[horizontalRoomsMade] + sumTo(horizontalRoomsMade, horizontalSpacings) + widths[horizontalRoomsMade] / 2;
+					for (int row = topRow; row <= bottomRow; row++) {
+						walls.add(new Point(column, row));
 					}
 				}
 			}
@@ -114,16 +129,17 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	
 	/**
 	 * Generates room data for one axis for a bordered layout.
-	 * @param windowSize - The size of the window on that axis
+	 * @param windowSize - The size of the window on this axis
+	 * @param minimumRoomSize - The minimum size of the room on this axis
+	 * @param maximumRoomSize - The maximum size of the room on this axis
 	 * @return A map containing the room widths and the spacings between the rooms
 	 */
-	private Map<String, int[]> generateAxisRoomData(int windowSize) {
+	private Map<String, int[]> generateAxisRoomData(int windowSize, int minimumRoomSize, int maximumRoomSize) {
 		Map<String, int[]> roomData = new HashMap<String, int[]>();
 		int[] roomSpacings;
 		int[] roomWidths;
 		
-		int border = RandomNumber.randomBetween(minimumBorderPassageWidth, maximumBorderPassageWidth);
-		int remainingSpace = windowSize - 2 - border * 2;
+		int remainingSpace = windowSize - 2;
 		
 		int size = RandomNumber.randomBetween(minimumRoomSize, maximumRoomSize);
 		
@@ -132,12 +148,10 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 			minimumNumberOfRooms = 1;
 		int maximumNumberOfRooms = remainingSpace / (size + minimumSpacing);
 		int numberOfRooms = RandomNumber.randomBetween(minimumNumberOfRooms, maximumNumberOfRooms + 1);
-		
-		int numberOfSpacings = numberOfRooms - 1;
-		roomSpacings = new int[numberOfRooms];
-		roomWidths = new int[numberOfRooms];
-		
-		roomSpacings[0] = border;
+
+		int numberOfSpacings = numberOfRooms + 1;
+		roomSpacings = new int[numberOfRooms + 1];
+		roomWidths = new int[numberOfRooms + 1];
 		
 		if (numberOfRooms == 1)
 			size = remainingSpace;
@@ -146,18 +160,18 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 			int spacing = spaceToAllocate / numberOfSpacings;
 			int remainder = spaceToAllocate % numberOfSpacings;
 			for (int i = 0; i < numberOfSpacings; i++)
-				roomSpacings[i + 1] = spacing;
+				roomSpacings[i] = spacing;
 			
 			int i = 0;
 			while (remainder > 0) {
 				int up = (int)Math.round(1.0 * (numberOfSpacings - 1) / 2) + i;
 				int down = (numberOfSpacings - 1) / 2 - i;
 				if (up < numberOfSpacings) {
-					roomSpacings[up + 1]++;
+					roomSpacings[up]++;
 					remainder--;
 				}
 				if (remainder > 0 && down >= 0) {
-					roomSpacings[down + 1]++;
+					roomSpacings[down]++;
 					remainder--;
 				}
 				if (up < numberOfSpacings && down >= 0)

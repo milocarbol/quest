@@ -166,13 +166,19 @@ public class WallCleaner {
 				}
 			}
 			for (WallCleanerNode node : allNodes) {
-				if (node.notHandled && node.location.x <= startNode.location.x && node.location.y >= startNode.location.y)
+				if (node.notHandled && node.location.x < startNode.location.x)
+					startNode = node;
+			}
+			for (WallCleanerNode node : allNodes) {
+				if (node.notHandled && node.location.y > startNode.location.y && node.location.x <= startNode.location.x)
 					startNode = node;
 			}
 			
 
-			if (startNode.notHandled)
+			if (startNode.notHandled) {
+				startNode.notHandled = false;
 				return startNode;
+			}
 			else
 				return null;
 		}
