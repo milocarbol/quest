@@ -25,10 +25,10 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	private static final int numberOfLayouts = 1;
 	
 	/** Constraints **/
-	private static final int	minimumRoomWidth = 10,
-								maximumRoomWidth = 18,
-								minimumRoomHeight = 6,
-								maximumRoomHeight = 14,
+	private static final int	minimumRoomWidth = 6,
+								maximumRoomWidth = GameWindow.GRID_COLUMNS - 2,
+								minimumRoomHeight = 3,
+								maximumRoomHeight = GameWindow.GRID_ROWS / 2,
 								minimumSpacing = 2,
 								maximumSpacing = 4;
 			
@@ -52,60 +52,11 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	/**
 	 * Generates walls using the "Border Passage" layout.
 	 * The "Border Passage" layout has rooms in the centre and a clear path around the border.
-	 * TODO - Clean this up.
 	 * @return The list of wall locations
 	 */
 	private List<Point> generateBorderPassageLayout() {
-		List<Point> walls = new LinkedList<Point>();
-		
-		Map<String, int[]> horizontalData = generateAxisRoomData(GameWindow.GRID_COLUMNS, minimumRoomWidth, maximumRoomWidth);
-		int[] horizontalSpacings = horizontalData.get(SPACING);
-		int[] widths = horizontalData.get(SIZE);
-		
-		Map<String, int[]> verticalData = generateAxisRoomData(GameWindow.GRID_ROWS, minimumRoomHeight, maximumRoomHeight);
-		int[] verticalSpacings = verticalData.get(SPACING);
-		int[] heights = verticalData.get(SIZE);
-		
-		for (int horizontalRoomsMade = 0; horizontalRoomsMade < horizontalSpacings.length - 1; horizontalRoomsMade++) {
-			
-			for (int verticalRoomsMade = 0; verticalRoomsMade < verticalSpacings.length - 1; verticalRoomsMade++) {
-			
-				int verticalOffset = sumTo(verticalRoomsMade, verticalSpacings);
-				int topRow = 1 + verticalRoomsMade * heights[verticalRoomsMade] + verticalOffset;
-				int bottomRow = (verticalRoomsMade + 1) * heights[verticalRoomsMade] + verticalOffset;
-				
-				for (int row = topRow; row <= bottomRow; row++) {
-					
-					int horizontalOffset = sumTo(horizontalRoomsMade, horizontalSpacings);
-					int leftColumn = 1 + horizontalRoomsMade * widths[horizontalRoomsMade] + horizontalOffset;
-					int rightColumn = (horizontalRoomsMade + 1) * widths[horizontalRoomsMade] + horizontalOffset;
-					
-					if (Math.random() < percentChanceToCreateRoom) {
-						for (int column = leftColumn; column <= rightColumn; column++) {
-							if (row == topRow || row == bottomRow ||
-								column == leftColumn || column == rightColumn)
-								walls.add(new Point(column, row));
-						}
-					}
-					
-					if (horizontalRoomsMade < horizontalSpacings.length - 2 && row == topRow + (bottomRow - topRow) / 2 && Math.random() < percentChanceToCreateRoom) {
-						leftColumn = rightColumn + 1;
-						rightColumn = leftColumn + horizontalSpacings[horizontalRoomsMade + 1];
-						for (int column = leftColumn; column <= rightColumn; column++)
-							walls.add(new Point(column, row));
-					}
-				}
-				
-				if (verticalRoomsMade < verticalSpacings.length - 2 && Math.random() < percentChanceToCreateRoom) {
-					topRow = bottomRow + 1;
-					bottomRow = topRow + verticalSpacings[verticalRoomsMade + 1];
-					int column = 1 + horizontalRoomsMade * widths[horizontalRoomsMade] + sumTo(horizontalRoomsMade, horizontalSpacings) + widths[horizontalRoomsMade] / 2;
-					for (int row = topRow; row <= bottomRow; row++) {
-						walls.add(new Point(column, row));
-					}
-				}
-			}
-		}
+		int minimumBorderSize = 2;
+		List<Point> walls = generateRooms(minimumBorderSize);
 		
 		walls = new WallCleaner(walls).cleanWalls();
 		
@@ -127,67 +78,113 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 		return new LinkedList<Point>();
 	}
 	
-	/**
-	 * Generates room data for one axis for a bordered layout.
-	 * @param windowSize - The size of the window on this axis
-	 * @param minimumRoomSize - The minimum size of the room on this axis
-	 * @param maximumRoomSize - The maximum size of the room on this axis
-	 * @return A map containing the room widths and the spacings between the rooms
-	 */
-	private Map<String, int[]> generateAxisRoomData(int windowSize, int minimumRoomSize, int maximumRoomSize) {
-		Map<String, int[]> roomData = new HashMap<String, int[]>();
-		int[] roomSpacings;
-		int[] roomWidths;
+	private List<Point> generateRooms(int borderSize) {
+		List<Point> walls = new LinkedList<Point>();
 		
-		int remainingSpace = windowSize - 2;
+		int roomWidth = RandomNumber.randomBetween(minimumRoomWidth, maximumRoomWidth);
+		int roomHeight = RandomNumber.randomBetween(minimumRoomHeight, maximumRoomHeight);
 		
-		int size = RandomNumber.randomBetween(minimumRoomSize, maximumRoomSize);
+		int[] horizontalSpacings = generateSpacings(GameWindow.GRID_COLUMNS - 2 * borderSize, roomWidth);
+		int[] verticalSpacings = generateSpacings(GameWindow.GRID_ROWS - 2 * borderSize, roomHeight);
 		
-		int minimumNumberOfRooms = remainingSpace / (size + maximumSpacing);
-		if (minimumNumberOfRooms == 0)
-			minimumNumberOfRooms = 1;
-		int maximumNumberOfRooms = remainingSpace / (size + minimumSpacing);
-		int numberOfRooms = RandomNumber.randomBetween(minimumNumberOfRooms, maximumNumberOfRooms + 1);
-
-		int numberOfSpacings = numberOfRooms + 1;
-		roomSpacings = new int[numberOfRooms + 1];
-		roomWidths = new int[numberOfRooms + 1];
-		
-		if (numberOfRooms == 1)
-			size = remainingSpace;
-		else {
-			int spaceToAllocate = remainingSpace - size * numberOfRooms;
-			int spacing = spaceToAllocate / numberOfSpacings;
-			int remainder = spaceToAllocate % numberOfSpacings;
-			for (int i = 0; i < numberOfSpacings; i++)
-				roomSpacings[i] = spacing;
-			
-			int i = 0;
-			while (remainder > 0) {
-				int up = (int)Math.round(1.0 * (numberOfSpacings - 1) / 2) + i;
-				int down = (numberOfSpacings - 1) / 2 - i;
-				if (up < numberOfSpacings) {
-					roomSpacings[up]++;
-					remainder--;
-				}
-				if (remainder > 0 && down >= 0) {
-					roomSpacings[down]++;
-					remainder--;
-				}
-				if (up < numberOfSpacings && down >= 0)
-					i++;
+		for (int horizontalRoom = 0; horizontalRoom < horizontalSpacings.length - 1; horizontalRoom++)
+			for (int verticalRoom = 0; verticalRoom < verticalSpacings.length - 1; verticalRoom++) {
+				int leftColumn = 1 + sumTo(horizontalRoom, horizontalSpacings) + roomWidth * horizontalRoom;
+				int topRow = 1 + sumTo(verticalRoom, verticalSpacings) + roomHeight * verticalRoom;
+				int horizontalConnectorWidth, verticalConnectorHeight;
+				if (horizontalRoom < horizontalSpacings.length - 2)
+					horizontalConnectorWidth = horizontalSpacings[horizontalRoom + 1];
 				else
-					i = 0;
+					horizontalConnectorWidth = 0;
+				if (verticalRoom < verticalSpacings.length - 2)
+					verticalConnectorHeight = verticalSpacings[verticalRoom + 1];
+				else
+					verticalConnectorHeight = 0;
+				walls.addAll(generateRoom(leftColumn, topRow, roomWidth, roomHeight, horizontalConnectorWidth, verticalConnectorHeight));
 			}
+		
+		return walls;
+	}
+	
+	/**
+	 * Generates a room with connectors sprouting off to the right and below.
+	 * @param leftColumn - The x-coordinate of the left side
+	 * @param topRow - The y-coordinate of the top
+	 * @param width - The width of the room
+	 * @param height - The height of the room
+	 * @param horizontalConnectorWidth - The width of the right-connector
+	 * @param verticalConnectorHeight - The width of the below-connector
+	 * @return A list of wall locations
+	 */
+	private List<Point> generateRoom(int leftColumn, int topRow, int width, int height, int horizontalConnectorWidth, int verticalConnectorHeight) {
+		List<Point> walls = new LinkedList<Point>();
+		for (int column = 0; column < width; column++)
+			for (int row = 0; row < height; row++)
+				if (column == 0 || column == width - 1 || row == 0 || row == height - 1)
+					walls.add(new Point(leftColumn + column, topRow + row));
+		
+		int row = topRow + height / 2;
+		for (int connectorColumn = 0; connectorColumn < horizontalConnectorWidth; connectorColumn++)
+			walls.add(new Point(leftColumn + width + connectorColumn, row));
+		
+		int column = leftColumn + width / 2;
+		for (int connectorRow = 0; connectorRow < verticalConnectorHeight; connectorRow++)
+			walls.add(new Point(column, topRow + height + connectorRow));
+		
+		return walls;
+	}
+	
+	/**
+	 * Computes the spacing between each room for an axis.
+	 * @param totalSpace - The total space available to fill with rooms
+	 * @param roomSize - The size of the rooms on this axis
+	 * @return An array one index larger than the number of rooms, containing all the spacings before each room (and after in the case of the last room).
+	 */
+	private int[] generateSpacings(int totalSpace, int roomSize) {
+		int numberOfRooms = RandomNumber.randomBetween(1, computeMaximumNumberOfRooms(roomSize, totalSpace));
+		int numberOfSpacings = numberOfRooms + 1;
+		int[] spacings = new int[numberOfSpacings];
+		
+		int totalSpacing = totalSpace - numberOfRooms * roomSize;
+		int spacing = totalSpacing / numberOfSpacings;
+		int remainder = totalSpacing % numberOfSpacings;
+		
+		for (int i = 0; i < numberOfSpacings; i++)
+			spacings[i] = spacing;
+		
+		int i = 0;
+		while (remainder > 0) {
+			int up = (int)Math.round(1.0 * (numberOfSpacings - 1) / 2) + i;
+			int down = (numberOfSpacings - 1) / 2 - i;
+			if (up < numberOfSpacings) {
+				spacings[up]++;
+				remainder--;
+			}
+			if (remainder > 0 && down >= 0) {
+				spacings[down]++;
+				remainder--;
+			}
+			if (up < numberOfSpacings && down >= 0)
+				i++;
+			else
+				i = 0;
 		}
 		
-		for (int i = 0; i < numberOfRooms; i++)
-			roomWidths[i] = size;
-		
-		roomData.put(SPACING, roomSpacings);
-		roomData.put(SIZE, roomWidths);
-		
-		return roomData;
+		return spacings;
+	}
+	
+	/**
+	 * Computes the maximum number of rooms that will fit in the given space.
+	 * @param roomSize - The size of the rooms on this axis
+	 * @param totalSpace - The total space available to fill
+	 * @return The maximum number of rooms that will fit (i.e. when the spacing is equal to ConstrainedWallGenerator.minimumSpacing)
+	 */
+	private int computeMaximumNumberOfRooms(int roomSize, int totalSpace) {
+		int number = 1;
+		while (number * (roomSize + minimumSpacing) + minimumSpacing < totalSpace) {
+			number++;
+		}
+		return number;
 	}
 	
 	/**

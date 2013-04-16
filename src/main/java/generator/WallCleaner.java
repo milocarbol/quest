@@ -18,11 +18,16 @@ public class WallCleaner {
 	private final int 	minimumSizeOfEntrance = 2,
 						maximumSizeOfEntrance = 10;
 	
+	/** The number of wall pieces to wait once we hit a visited node before removing any **/
 	private final int	minimumWallsToWait = 0,
 						maximumWallsToWait = 50;
 	
+	/** The number of entrances to make **/
 	private final int	minimumEntrancesToMake = 1,
 						maximumEntrancesToMake = 4;
+	
+	/** The number of times to run the cleaner **/
+	private final int	timesToRun = 2;
 	
 	/** The node map **/
 	private List<WallCleanerNode> allNodes;
@@ -69,7 +74,7 @@ public class WallCleaner {
 			}
 		}
 		
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < timesToRun; i++) {
 			Set<WallCleanerNode> visitedNodes = new HashSet<WallCleanerNode>();
 			WallCleanerNode startNode;
 			while ((startNode = getStartNode()) != null) {
