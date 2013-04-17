@@ -11,7 +11,7 @@ import java.util.List;
  * @author Milo Carbol
  * @since 15 April 2013
  */
-public class ConstrainedWallGenerator implements IWallGenerator {
+public class ConstrainedWallGenerator implements IFeatureGenerator {
 	
 	/** Layout patterns **/
 	private static enum Layout { BORDER_PASSAGE, NO_BORDER_PASSAGE };
@@ -34,7 +34,7 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	 * @param wallType - The type of wall to use
 	 * @return The list of wall locations
 	 */
-	public List<Point> generateWalls(String wallType) {
+	public List<Point> generateFeatures(String wallType) {
 		Layout layout = randomizePattern();
 		switch (layout) {
 		case BORDER_PASSAGE:

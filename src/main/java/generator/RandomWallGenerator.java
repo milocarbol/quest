@@ -16,7 +16,7 @@ import data.Images;
  * @since 14 April 2013
  * @deprecated - Too random, can trigger an infinite loop in the wall cleaner
  */
-public class RandomWallGenerator implements IWallGenerator {
+public class RandomWallGenerator implements IFeatureGenerator {
 
 	/** Constraints **/
 	private static final int	maximumNumberOfWallChunks = 5,
@@ -35,7 +35,7 @@ public class RandomWallGenerator implements IWallGenerator {
 	 * @param wallType - The type of wall to use
 	 * @return The list of wall locations
 	 */
-	public List<Point> generateWalls(String wallType) {
+	public List<Point> generateFeatures(String wallType) {
 		List<Point> walls = generateStraightWalls();
 		Map<Point, String> walledRooms = generateWalledRooms(wallType);
 		for (Point wall : walledRooms.keySet())

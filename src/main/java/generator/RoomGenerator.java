@@ -30,7 +30,7 @@ public class RoomGenerator implements IRoomLoader {
 	private final Map<String, String> data;
 	
 	/** The wall generator to use **/
-	private final IWallGenerator wallGenerator;
+	private final IFeatureGenerator wallGenerator;
 	
 	/** The loader for features **/
 	private final FeatureLoader featureLoader;
@@ -55,7 +55,7 @@ public class RoomGenerator implements IRoomLoader {
 	 * @param featureLoader - The loader for features.
 	 * @param playerLoader - The loader for the player.
 	 */
-	public RoomGenerator(String roomType, IWallGenerator wallGenerator, RoomDataLoader dataLoader, FeatureLoader featureLoader, PlayerLoader playerLoader, MonsterLoader monsterLoader) {
+	public RoomGenerator(String roomType, IFeatureGenerator wallGenerator, RoomDataLoader dataLoader, FeatureLoader featureLoader, PlayerLoader playerLoader, MonsterLoader monsterLoader) {
 		this.data = dataLoader.loadRoomData(roomType);
 		this.wallGenerator = wallGenerator;
 		this.featureLoader = featureLoader;
@@ -147,10 +147,12 @@ public class RoomGenerator implements IRoomLoader {
 		
 		String wallType = randomizeType(data.get("wall"));
 		
-		List<Point> walls = wallGenerator.generateWalls(wallType);
-		
+		List<Point> walls = wallGenerator.generateFeatures(wallType);
 		for (Point wall : walls)
 			featureStrings[wall.x][wall.y] = wallType;
+		
+		for (Point water : new WaterGenerator().generateFeatures("water"))
+			featureStrings[water.x][water.y] = "water"; 
 		
 		return featureStrings;
 	}

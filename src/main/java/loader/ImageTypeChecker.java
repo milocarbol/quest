@@ -1,7 +1,9 @@
 package loader;
 
 import java.awt.Image;
+import java.awt.Point;
 
+import control.Game;
 import data.Images;
 
 /**
@@ -31,7 +33,7 @@ public class ImageTypeChecker {
 	 */
 	public Image computeImage(String featureType, int column, int row) {
 		if (Images.EDGED.contains(featureTypes[column][row]))
-			return ImageLoader.loadImage(featureTypes[column][row] + getPositionString(featureTypes[column][row], column, row));
+			return ImageLoader.loadImage(featureTypes[column][row] + getPositionString(featureTypes[column][row], new Point(column, row)));
 		else
 			return ImageLoader.loadImage(featureTypes[column][row]);
 	}
@@ -43,30 +45,30 @@ public class ImageTypeChecker {
 	 * @param row - The y-coordinate of the feature
 	 * @return The correct suffix for edged features
 	 */
-	private String getPositionString(String featureType, int column, int row) {
-		if (isTopLeft(featureType, column, row))
+	private String getPositionString(String featureType, Point location) {
+		if (isTopLeft(featureType, location))
 			return "_tl";
-		else if (isTopEdge(featureType, column, row))
+		else if (isTopEdge(featureType, location))
 			return "_t";
-		else if (isTopRight(featureType, column, row))
+		else if (isTopRight(featureType, location))
 			return "_tr";
-		else if (isRightEdge(featureType, column, row))
+		else if (isRightEdge(featureType, location))
 			return "_r";
-		else if (isBottomRight(featureType, column, row))
+		else if (isBottomRight(featureType, location))
 			return "_br";
-		else if (isBottomEdge(featureType, column, row))
+		else if (isBottomEdge(featureType, location))
 			return "_b";
-		else if (isBottomLeft(featureType, column, row))
+		else if (isBottomLeft(featureType, location))
 			return "_bl";
-		else if (isLeftEdge(featureType, column, row))
+		else if (isLeftEdge(featureType, location))
 			return "_l";
-		else if (isInverseTopLeft(featureType, column, row))
+		else if (isInverseTopLeft(featureType, location))
 			return "_itl";
-		else if (isInverseTopRight(featureType, column, row))
+		else if (isInverseTopRight(featureType, location))
 			return "_itr";
-		else if (isInverseBottomRight(featureType, column, row))
+		else if (isInverseBottomRight(featureType, location))
 			return "_ibr";
-		else if (isInverseBottomLeft(featureType, column, row))
+		else if (isInverseBottomLeft(featureType, location))
 			return "_ibl";
 		else
 			return "";
@@ -75,159 +77,151 @@ public class ImageTypeChecker {
 	/**
 	 * Checks if a feature is the top left corner of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is the top left corner of the set
 	 */
-	private boolean isTopLeft(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, false, true, true, false);
+	private boolean isTopLeft(String featureType, Point location) {
+		return isPosition(featureType, location, false, true, true, false);
 	}
 	
 	/**
 	 * Checks if a feature is a top edge of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is a top edge of the set
 	 */
-	private boolean isTopEdge(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, false, true, true, true);
+	private boolean isTopEdge(String featureType, Point location) {
+		return isPosition(featureType, location, false, true, true, true);
 	}
 	
 	/**
 	 * Checks if a feature is the top right corner of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is the top right corner of the set
 	 */
-	private boolean isTopRight(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, false, false, true, true);
+	private boolean isTopRight(String featureType, Point location) {
+		return isPosition(featureType, location, false, false, true, true);
 	}
 	
 	/**
 	 * Checks if a feature is a right edge of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is a right edge of the set
 	 */
-	private boolean isRightEdge(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, true, false, true, true);
+	private boolean isRightEdge(String featureType, Point location) {
+		return isPosition(featureType, location, true, false, true, true);
 	}
 	
 	/**
 	 * Checks if a feature is the bottom right corner of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is the bottom right corner of the set
 	 */
-	private boolean isBottomRight(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, true, false, false, true);
+	private boolean isBottomRight(String featureType, Point location) {
+		return isPosition(featureType, location, true, false, false, true);
 	}
 	
 	/**
 	 * Checks if a feature is a bottom edge of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is a bottom edge of the set
 	 */
-	private boolean isBottomEdge(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, true, true, false, true);
+	private boolean isBottomEdge(String featureType, Point location) {
+		return isPosition(featureType, location, true, true, false, true);
 	}
 
 	/**
 	 * Checks if a feature is the bottom left corner of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is the bottom left corner of the set
 	 */
-	private boolean isBottomLeft(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, true, true, false, false);
+	private boolean isBottomLeft(String featureType, Point location) {
+		return isPosition(featureType, location, true, true, false, false);
 	}
 
 	/**
 	 * Checks if a feature is a left edge of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is a left edge of the set
 	 */
-	private boolean isLeftEdge(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, true, true, true, false);
+	private boolean isLeftEdge(String featureType, Point location) {
+		return isPosition(featureType, location, true, true, true, false);
 	}
 	
 	/**
 	 * Checks if a feature is an inverse top left corner of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is an inverse top left corner of the set
 	 */
-	private boolean isInverseTopLeft(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, true, true, true, true, false, true, true, true);
+	private boolean isInverseTopLeft(String featureType, Point location) {
+		return isPosition(featureType, location, true, true, true, true, false, true, true, true);
 	}
 	
 	/**
 	 * Checks if a feature is an inverse top right corner of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is an inverse top right corner of the set
 	 */
-	private boolean isInverseTopRight(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, true, true, true, true, true, true, false, true);
+	private boolean isInverseTopRight(String featureType, Point location) {
+		return isPosition(featureType, location, true, true, true, true, true, true, false, true);
 	}
 	
 	/**
 	 * Checks if a feature is an inverse bottom left corner of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is an inverse bottom left corner of the set
 	 */
-	private boolean isInverseBottomLeft(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, true, true, false, true, true, true, true, true);
+	private boolean isInverseBottomLeft(String featureType, Point location) {
+		return isPosition(featureType, location, true, true, false, true, true, true, true, true);
 	}
 	
 	/**
 	 * Checks if a feature is an inverse bottom right corner of a set of those features.
 	 * @param featureType - The feature type string
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @return True if the feature is an inverse bottom right corner of the set
 	 */
-	private boolean isInverseBottomRight(String featureType, int column, int row) {
-		return isPosition(featureType, column, row, false, true, true, true, true, true, true, true);
+	private boolean isInverseBottomRight(String featureType, Point location) {
+		return isPosition(featureType, location, false, true, true, true, true, true, true, true);
 	}
 	
 	/**
 	 * Checks if a feature's surroundings matches the parameters.
 	 * @param featureType - The feature's type
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @param top - If the feature above should match this feature type
 	 * @param right - If the feature to the right should match this feature type
 	 * @param bottom - If the feature below should match this feature type
 	 * @param left - If the feature to the left should match this feature type
 	 * @return True if the feature's surroundings match the parameters
 	 */
-	private boolean isPosition(	String featureType, int column, int row,
+	private boolean isPosition(	String featureType, Point location, 
 								boolean top, boolean right, boolean bottom, boolean left) {
-		return	featureTypes[column][row - 1].equals(featureType) == top &&
-				featureTypes[column + 1][row].equals(featureType) == right &&
-				featureTypes[column][row + 1].equals(featureType) == bottom &&
-				featureTypes[column - 1][row].equals(featureType) == left;
+		int column = location.x;
+		int row = location.y;
+		boolean isTop = Game.isTop(location),
+				isRight = Game.isRight(location),
+				isBottom = Game.isBottom(location),
+				isLeft = Game.isLeft(location);
+		return	(isTop && top == true || (!isTop && featureTypes[column][row - 1].equals(featureType) == top)) &&
+				(isRight && right == true || (!isRight && featureTypes[column + 1][row].equals(featureType) == right)) &&
+				(isBottom && bottom == true || (!isBottom && featureTypes[column][row + 1].equals(featureType) == bottom)) &&
+				(isLeft && left == true || (!isLeft && featureTypes[column - 1][row].equals(featureType) == left));
 	}
 	
 	/**
 	 * Checks if a feature's surroundings matches the parameters.
 	 * @param featureType - The feature's type
-	 * @param column - The x-coordinate of the feature
-	 * @param row - The y-coordinate of the feature
+	 * @param location - The grid space
 	 * @param topLeft - If the feature above and to the left should match this feature type
 	 * @param top - If the feature above should match this feature type
 	 * @param topRight - If the feature above and to the right should match this feature type
@@ -238,17 +232,20 @@ public class ImageTypeChecker {
 	 * @param left - If the feature to the left should match this feature type
 	 * @return True if the feature's surroundings match the parameters
 	 */
-	private boolean isPosition(	String featureType, int column, int row,
+	private boolean isPosition( String featureType, Point location,
 						boolean topLeft, boolean top, boolean topRight,
 						boolean right, boolean bottomRight, boolean bottom,
 						boolean bottomLeft, boolean left) {
-		return	featureTypes[column - 1][row - 1].equals(featureType) == topLeft &&
-				featureTypes[column][row - 1].equals(featureType) == top &&
-				featureTypes[column + 1][row - 1].equals(featureType) == topRight &&
-				featureTypes[column + 1][row].equals(featureType) == right &&
-				featureTypes[column + 1][row + 1].equals(featureType) == bottomRight &&
-				featureTypes[column][row + 1].equals(featureType) == bottom &&
-				featureTypes[column - 1][row + 1].equals(featureType) == bottomLeft &&
-				featureTypes[column - 1][row].equals(featureType) == left;
+		int column = location.x;
+		int row = location.y;
+		boolean isTopLeft = Game.isTopLeft(location),
+				isTopRight = Game.isTopRight(location),
+				isBottomRight = Game.isBottomRight(location),
+				isBottomLeft = Game.isBottomLeft(location);
+		return	isPosition(featureType, location, top, right, bottom, left) &&
+				(isTopLeft && topLeft == true || (!(Game.isTop(location) || Game.isLeft(location)) && featureTypes[column - 1][row - 1].equals(featureType) == topLeft)) &&
+				(isTopRight && topRight == true || (!(Game.isTop(location) || Game.isRight(location)) && featureTypes[column + 1][row - 1].equals(featureType) == topRight)) &&
+				(isBottomRight && bottomRight == true || (!(Game.isBottom(location) || Game.isRight(location)) && featureTypes[column + 1][row + 1].equals(featureType) == bottomRight)) &&
+				(isBottomLeft && bottomLeft == true || (!(Game.isBottom(location) || Game.isLeft(location)) && featureTypes[column - 1][row + 1].equals(featureType) == bottomLeft));
 	}
 }

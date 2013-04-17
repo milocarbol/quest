@@ -14,7 +14,7 @@ import entity.actor.Actor;
 import entity.actor.Monster;
 import entity.actor.Player;
 import generator.ConstrainedWallGenerator;
-import generator.IWallGenerator;
+import generator.IFeatureGenerator;
 import generator.RoomGenerator;
 import gui.GameWindow;
 
@@ -44,7 +44,7 @@ public class Game {
 	 * Makes a new game and puts the player and monsters in place for testing.
 	 */
 	public Game() {
-		IWallGenerator wallGenerator = new ConstrainedWallGenerator();
+		IFeatureGenerator wallGenerator = new ConstrainedWallGenerator();
 		RoomDataLoader dataLoader = new RoomDataLoader();
 		FeatureLoader featureLoader = new FeatureLoader(this);
 		PowerLoader powerLoader = new PowerLoader();
@@ -225,5 +225,86 @@ public class Game {
 	 */
 	public static int pixelToGridSpace(int pixel) {
 		return pixel/GameWindow.GRID_SPACE_SIZE;
+	}
+	
+	/**
+	 * Checks if a grid space is at the top of the map
+	 * @param location - the grid space
+	 * @return If the grid space is at the top of the map
+	 */
+	public static boolean isTop(Point location) {
+		return location.y == 0;
+	}
+	
+	/**
+	 * Checks if a grid space is at the right of the map
+	 * @param location - the grid space
+	 * @return If the grid space is at the right of the map
+	 */
+	public static boolean isRight(Point location) {
+		return location.x == GameWindow.GRID_COLUMNS - 1;
+	}
+	
+	/**
+	 * Checks if a grid space is at the bottom of the map
+	 * @param location - the grid space
+	 * @return If the grid space is at the bottom of the map
+	 */
+	public static boolean isBottom(Point location) {
+		return location.y == GameWindow.GRID_ROWS - 1;
+	}
+	
+	/**
+	 * Checks if a grid space is at the left of the map
+	 * @param location - the grid space
+	 * @return If the grid space is at the left of the map
+	 */
+	public static boolean isLeft(Point location) {
+		return location.x == 0;
+	}
+	
+	/**
+	 * Checks if a grid space is at the top left of the map
+	 * @param location - the grid space
+	 * @return If the grid space is at the top left of the map
+	 */
+	public static boolean isTopLeft(Point location) {
+		return isTop(location) && isLeft(location);
+	}
+	
+	/**
+	 * Checks if a grid space is at the top right of the map
+	 * @param location - the grid space
+	 * @return If the grid space is at the top right of the map
+	 */
+	public static boolean isTopRight(Point location) {
+		return isTop(location) && isRight(location);
+	}
+	
+	/**
+	 * Checks if a grid space is at the bottom right of the map
+	 * @param location - the grid space
+	 * @return If the grid space is at the bottom right of the map
+	 */
+	public static boolean isBottomRight(Point location) {
+		return isBottom(location) && isRight(location);
+	}
+	
+	/**
+	 * Checks if a grid space is at the bottom left of the map
+	 * @param location - the grid space
+	 * @return If the grid space is at the bottom left of the map
+	 */
+	public static boolean isBottomLeft(Point location) {
+		return isBottom(location) && isLeft(location);
+	}
+	
+	/**
+	 * Checks if a grid space is at any edge of the map
+	 * @param location - the grid space
+	 * @return If the grid space is at any edge of the map
+	 */
+	public static boolean isEdge(Point location) {
+		return isTop(location) || isRight(location) || isBottom(location) || isLeft(location);
 	}
 }
