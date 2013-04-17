@@ -79,6 +79,11 @@ public class RoomGenerator implements IRoomLoader {
 		return new RoomData(tiles, features, player, monsters);
 	}
 	
+	/**
+	 * Adds a random number of monsters to the room.
+	 * @param features - The existing features (monsters will not be placed in occupied spaces)
+	 * @return The list of monsters to add
+	 */
 	private List<Monster> generateMonsters(Feature[][] features) {
 		List<Monster> monsters = new LinkedList<Monster>();
 		
