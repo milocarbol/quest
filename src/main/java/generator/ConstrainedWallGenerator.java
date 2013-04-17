@@ -3,10 +3,8 @@ package generator;
 import gui.GameWindow;
 
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Generates a semi-random layout of rooms
@@ -14,9 +12,6 @@ import java.util.Map;
  * @since 15 April 2013
  */
 public class ConstrainedWallGenerator implements IWallGenerator {
-
-	private static final String SPACING = "spacing",
-								SIZE = "size";
 	
 	/** Layout patterns **/
 	private static enum Layout { BORDER_PASSAGE, NO_BORDER_PASSAGE };
@@ -27,12 +22,13 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	/** Constraints **/
 	private static final int	minimumRoomWidth = 6,
 								maximumRoomWidth = GameWindow.GRID_COLUMNS - 2,
-								minimumRoomHeight = 3,
+								minimumRoomHeight = 4,
 								maximumRoomHeight = GameWindow.GRID_ROWS / 2,
-								minimumSpacing = 2,
-								maximumSpacing = 4;
-			
-	private double percentChanceToCreateRoom = 0.75;
+								minimumSpacing = 2;
+		
+	/** Percentage chance for a room or a connector to be generated **/
+	private double percentChanceToCreateRoom = 0.8;
+	
 	/**
 	 * Generates the walls using a specified type.
 	 * @param wallType - The type of wall to use
@@ -81,16 +77,16 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	private List<Point> generateRooms(int borderSize) {
 		List<Point> walls = new LinkedList<Point>();
 		
-		int roomWidth = RandomNumber.randomBetween(minimumRoomWidth, maximumRoomWidth);
-		int roomHeight = RandomNumber.randomBetween(minimumRoomHeight, maximumRoomHeight);
+		int roomWidth = RandomNumber.randomBetween(minimumRoomWidth, maximumRoomWidth - 2 * borderSize);
+		int roomHeight = RandomNumber.randomBetween(minimumRoomHeight, maximumRoomHeight - 2 * borderSize);
 		
 		int[] horizontalSpacings = generateSpacings(GameWindow.GRID_COLUMNS - 2 * borderSize, roomWidth);
 		int[] verticalSpacings = generateSpacings(GameWindow.GRID_ROWS - 2 * borderSize, roomHeight);
 		
 		for (int horizontalRoom = 0; horizontalRoom < horizontalSpacings.length - 1; horizontalRoom++)
 			for (int verticalRoom = 0; verticalRoom < verticalSpacings.length - 1; verticalRoom++) {
-				int leftColumn = 1 + sumTo(horizontalRoom, horizontalSpacings) + roomWidth * horizontalRoom;
-				int topRow = 1 + sumTo(verticalRoom, verticalSpacings) + roomHeight * verticalRoom;
+				int leftColumn = borderSize + sumTo(horizontalRoom, horizontalSpacings) + roomWidth * horizontalRoom;
+				int topRow = borderSize + sumTo(verticalRoom, verticalSpacings) + roomHeight * verticalRoom;
 				int horizontalConnectorWidth, verticalConnectorHeight;
 				if (horizontalRoom < horizontalSpacings.length - 2)
 					horizontalConnectorWidth = horizontalSpacings[horizontalRoom + 1];
@@ -100,6 +96,7 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 					verticalConnectorHeight = verticalSpacings[verticalRoom + 1];
 				else
 					verticalConnectorHeight = 0;
+				
 				walls.addAll(generateRoom(leftColumn, topRow, roomWidth, roomHeight, horizontalConnectorWidth, verticalConnectorHeight));
 			}
 		
@@ -118,18 +115,24 @@ public class ConstrainedWallGenerator implements IWallGenerator {
 	 */
 	private List<Point> generateRoom(int leftColumn, int topRow, int width, int height, int horizontalConnectorWidth, int verticalConnectorHeight) {
 		List<Point> walls = new LinkedList<Point>();
-		for (int column = 0; column < width; column++)
-			for (int row = 0; row < height; row++)
-				if (column == 0 || column == width - 1 || row == 0 || row == height - 1)
-					walls.add(new Point(leftColumn + column, topRow + row));
+		if (Math.random() < percentChanceToCreateRoom) {
+			for (int column = 0; column < width; column++)
+				for (int row = 0; row < height; row++)
+					if (column == 0 || column == width - 1 || row == 0 || row == height - 1)
+						walls.add(new Point(leftColumn + column, topRow + row));
+		}
 		
-		int row = topRow + height / 2;
-		for (int connectorColumn = 0; connectorColumn < horizontalConnectorWidth; connectorColumn++)
-			walls.add(new Point(leftColumn + width + connectorColumn, row));
+		if (Math.random() < percentChanceToCreateRoom) {
+			int row = topRow + height / 2;
+			for (int connectorColumn = 0; connectorColumn < horizontalConnectorWidth; connectorColumn++)
+				walls.add(new Point(leftColumn + width + connectorColumn, row));
+		}
 		
-		int column = leftColumn + width / 2;
-		for (int connectorRow = 0; connectorRow < verticalConnectorHeight; connectorRow++)
-			walls.add(new Point(column, topRow + height + connectorRow));
+		if (Math.random() < percentChanceToCreateRoom) {
+			int column = leftColumn + width / 2;
+			for (int connectorRow = 0; connectorRow < verticalConnectorHeight; connectorRow++)
+				walls.add(new Point(column, topRow + height + connectorRow));
+		}
 		
 		return walls;
 	}

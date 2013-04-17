@@ -147,7 +147,6 @@ public class RoomGenerator implements IRoomLoader {
 		for (Point wall : walls)
 			featureStrings[wall.x][wall.y] = wallType;
 		
-		
 		return featureStrings;
 	}
 	

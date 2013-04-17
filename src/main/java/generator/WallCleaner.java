@@ -20,14 +20,11 @@ public class WallCleaner {
 	
 	/** The number of wall pieces to wait once we hit a visited node before removing any **/
 	private final int	minimumWallsToWait = 0,
-						maximumWallsToWait = 50;
+						maximumWallsToWait = 10;
 	
 	/** The number of entrances to make **/
 	private final int	minimumEntrancesToMake = 1,
 						maximumEntrancesToMake = 4;
-	
-	/** The number of times to run the cleaner **/
-	private final int	timesToRun = 2;
 	
 	/** The node map **/
 	private List<WallCleanerNode> allNodes;
@@ -74,16 +71,16 @@ public class WallCleaner {
 			}
 		}
 		
-		for (int i = 0; i < timesToRun; i++) {
-			Set<WallCleanerNode> visitedNodes = new HashSet<WallCleanerNode>();
-			WallCleanerNode startNode;
-			while ((startNode = getStartNode()) != null) {
-				clean(startNode, startNode, visitedNodes, false, 0, 0, RandomNumber.randomBetween(minimumEntrancesToMake, maximumEntrancesToMake));
-			}
-			
-			for (WallCleanerNode node : allNodes)
-				cleanedWalls.add(node.location);
+		Set<WallCleanerNode> visitedNodes = new HashSet<WallCleanerNode>();
+		
+		WallCleanerNode startNode = getStartNode();
+		while (startNode != null && startNode.notHandled) {
+			clean(startNode, startNode, visitedNodes, false, 0, 0, 1);
+			startNode = getStartNode();
 		}
+		
+		for (WallCleanerNode node : allNodes)
+			cleanedWalls.add(node.location);
 		
 		return cleanedWalls;
 	}
@@ -105,17 +102,26 @@ public class WallCleaner {
 					toWait--;
 				}
 				else {
+					if (currentNode.up != null)
+						currentNode.up.down = null;
+					if (currentNode.right != null)
+						currentNode.right.left = null;
+					if (currentNode.down != null)
+						currentNode.down.up = null;
+					if (currentNode.left != null)
+						currentNode.left.right = null;
 					allNodes.remove(currentNode);
 					toClean--;
 				}
-				if (currentNode.up != null && currentNode.up != previousNode)
-					return clean(currentNode.up, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
-				if (currentNode.right != null && currentNode.right != previousNode)
-					return clean(currentNode.right, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
-				if (currentNode.down != null && currentNode.down != previousNode)
-					return clean(currentNode.down, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
-				if (currentNode.left != null && currentNode.left != previousNode)
-					return clean(currentNode.left, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				if (currentNode.down != null)
+					clean(currentNode.down, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				else if (currentNode.left != null)
+					clean(currentNode.left, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				else if (currentNode.up != null)
+					clean(currentNode.up, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				else if (currentNode.right != null)
+					clean(currentNode.right, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				
 			}
 			else if (entrancesToMake > 0) {
 				entrancesToMake--;
@@ -137,23 +143,20 @@ public class WallCleaner {
 				cleaning = true;
 				toWait = RandomNumber.randomBetween(minimumWallsToWait, maximumWallsToWait);
 				toClean = RandomNumber.randomBetween(minimumSizeOfEntrance, maximumSizeOfEntrance);
-				if (currentNode.up != null && currentNode.up != previousNode)
-					return clean(currentNode.up, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
-				if (currentNode.right != null && currentNode.right != previousNode)
-					return clean(currentNode.right, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
-				if (currentNode.down != null && currentNode.down != previousNode)
-					return clean(currentNode.down, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
-				if (currentNode.left != null && currentNode.left != previousNode)
-					return clean(currentNode.left, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				entrancesToMake = RandomNumber.randomBetween(minimumEntrancesToMake, maximumEntrancesToMake);
+				if (currentNode.down != null)
+					clean(currentNode.down, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				else if (currentNode.left != null)
+					clean(currentNode.left, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 			}
 			else {
 				visitedNodes.add(currentNode);
 				currentNode.notHandled = false;
 			}
 			if (currentNode.up != null)
-				return clean(currentNode.up, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				clean(currentNode.up, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 			if (currentNode.right != null)
-				return clean(currentNode.right, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
+				clean(currentNode.right, currentNode, visitedNodes, cleaning, toClean, toWait, entrancesToMake);
 		}
 		return null;
 	}
@@ -179,9 +182,7 @@ public class WallCleaner {
 					startNode = node;
 			}
 			
-
 			if (startNode.notHandled) {
-				startNode.notHandled = false;
 				return startNode;
 			}
 			else
