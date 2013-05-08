@@ -128,7 +128,7 @@ public class Game {
 	 * @param location - The coordinates of the space to check
 	 * @return True if the space is within the confines of the game board, false otherwise.
 	 */
-	public boolean spaceIsValid(Point location) {
+	public static boolean spaceIsValid(Point location) {
 		return	location.x >= 0 && location.x < GameWindow.GRID_COLUMNS &&
 				location.y >= 0 && location.y < GameWindow.GRID_ROWS;
 	}

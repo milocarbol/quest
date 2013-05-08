@@ -151,7 +151,7 @@ public class RoomGenerator implements IRoomLoader {
 		for (Point wall : walls)
 			featureStrings[wall.x][wall.y] = wallType;
 		
-		for (Point water : new WaterGenerator().generateFeatures("water"))
+		for (Point water : new PoolGenerator().generateFeatures("water"))
 			featureStrings[water.x][water.y] = "water"; 
 		
 		return featureStrings;
